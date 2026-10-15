@@ -76,7 +76,7 @@ public class CQuaterView : MonoBehaviour
 
         if (Mathf.Abs(scroll) > 0.01f)
         {
-            Debug.Log("Scroll 움직였어.");
+            CLogger.Log("Scroll 움직였어.");
             _zoomDamped += _zoomSharpness * (-scroll);
             float t = Mathf.Clamp(_zoomDamped, 0, 1);
             if(_zoomDamped < -1)
@@ -109,7 +109,7 @@ public class CQuaterView : MonoBehaviour
     {
         if(_cameraTr == null)
         {
-            Debug.Log("CQuaterView 스크립트 카메라 비어있음.");
+            CLogger.Log("CQuaterView 스크립트 카메라 비어있음.");
             return;
         }
 
