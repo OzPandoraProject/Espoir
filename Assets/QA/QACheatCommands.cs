@@ -44,6 +44,7 @@ public class QACheatCommands : MonoBehaviour
                 continue;
             }
 
+            enemy.GetDamage(enemy.HpCurrent);
             enemy.CallDie();
             killedCount++;
         }
