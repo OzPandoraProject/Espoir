@@ -401,16 +401,6 @@ public class CTestEnemy : CEnemy
     
     }
 
-    private void AttackPlayer(CUnit defender)
-    {
-        if (defender = _player)
-        {
-
-        }
-
-
-    }
-
 
 
     private void OnDrawGizmos()
