@@ -53,7 +53,11 @@ public class CTestEnemy : CEnemy
     private SoundManager _soundManager;
     private Transform _target;
     private Vector3 _startPos;
+
+    private Vector3 _movePos;
     private Rigidbody _rb;
+
+
 
     #region Animator
     [SerializeField] private Animator _animator;
@@ -64,6 +68,7 @@ public class CTestEnemy : CEnemy
 
     private bool _isAttack;
     private bool _isMove;
+    private bool _isReturn;
     private bool _isPatrol;
     private bool _isDie;
     #endregion
@@ -105,7 +110,7 @@ public class CTestEnemy : CEnemy
             return;
         }
         // TODO : 플레이어를 쫓아가기
-        OnTargetMove();
+        OnTargetMove_Update();
 
 
 
@@ -120,7 +125,14 @@ public class CTestEnemy : CEnemy
 
     }
 
+    private void FixedUpdate()
+    {
+        OnTargetMove_Fixed();
 
+
+    }
+
+    #region No Rigidbody Move
 
     private void OnTargetMove()
     {
@@ -130,12 +142,7 @@ public class CTestEnemy : CEnemy
         }
 
 
-        Vector3 target = new Vector3(_target.position.x , 0f, _target.position.z);
-
-
-
-
-        // transform.rotation = Quaternion.LookRotation(target, Vector3.up);
+        Vector3 target = new Vector3(_target.position.x , 0f , _target.position.z);
 
         Vector3 toTarget = target - transform.position;
 
@@ -194,17 +201,16 @@ public class CTestEnemy : CEnemy
 
     }
 
-
     private void FollowPlayer(Vector3 target, float dis)
     {
-        Vector3 direction = target - transform.position;
+        Vector3 direction = target - this.transform.position;
         direction.y = 0f;
 
         if (direction.sqrMagnitude > 0.001f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.RotateTowards(
-                transform.rotation,
+                this.transform.rotation,
                 targetRotation,
                 3600f * Time.deltaTime
             );
@@ -219,6 +225,10 @@ public class CTestEnemy : CEnemy
 
             Vector3 targetPos = target - (n_toTarget * _offsetDir);
 
+            //transform.position = Vector3.Lerp(Vector3.forward, targetPos, _moveSpeed *Time.deltaTime);
+
+            //_rb.MovePosition(this.transform.forward + targetPos * _moveSpeed * Time.deltaTime);
+
             transform.position = Vector3.MoveTowards(transform.position, targetPos, _moveSpeed * Time.deltaTime);
 
         }
@@ -226,11 +236,168 @@ public class CTestEnemy : CEnemy
         else
         {
             _isMove = false;
+
         }
 
 
 
     }
+
+#endregion
+
+
+    #region Rigidbody Move
+
+    // 이동 외 애니메이션 + 회전
+    private void OnTargetMove_Update()
+    {
+        if (_target == null && _isAttack == true)
+        {
+            _isMove = false;
+            _movePos = Vector3.zero;
+            _isReturn = false;
+
+            return;
+        }
+
+
+
+        Vector3 target = new Vector3(_target.position.x, 0, _target.position.z);
+               
+        Vector3 toTarget = target - transform.position;
+
+        float distance = toTarget.magnitude;
+
+        _OnTarget = distance > _sightView ? false : true;
+        
+        if (_OnTarget == true)
+        {
+            CLogger.Log("타겟이 들어왔다.");
+            
+            _forgetTimer = 0.0f;
+
+            _isReturn = false;
+
+            if (distance < _sightView & distance > _offsetDir)
+            {
+                _isMove = true;
+
+                _movePos = toTarget.normalized;
+
+                Quaternion targetRotation = Quaternion.LookRotation(_movePos);
+                transform.rotation = Quaternion.RotateTowards
+                    (
+                        transform.rotation,
+                        targetRotation,
+                        3600f * Time.deltaTime
+                    );
+            }
+
+            else
+            {
+                _isMove = false;
+                _movePos = Vector3.zero;
+            }
+
+        }
+
+        else
+        {
+            if (_forgetTimer < _forgetTime)
+            {
+                _forgetTimer += Time.deltaTime;
+
+
+                if (distance > _offsetDir)
+                {
+                    _isMove = true;
+
+                    _movePos = toTarget.normalized;
+
+
+                }
+
+
+                else
+                {
+                    _isMove = false;
+
+                    _movePos = Vector3.zero;
+
+                }
+
+            }
+
+            else
+            {
+                _isMove = false;
+
+                CLogger.Log("원래 위치로");
+                Vector3 direction = _startPos - transform.position;
+                direction.y = 0f;
+
+                if (direction.sqrMagnitude > 0.001f)
+                {
+                    _isMove = true;
+                    _isReturn = true;
+
+                    _movePos = direction.normalized;
+
+                    Quaternion targetRotation = Quaternion.LookRotation(direction);
+                    transform.rotation = Quaternion.RotateTowards(
+                        transform.rotation,
+                        targetRotation,
+                        3600f * Time.deltaTime
+                    );
+                }
+
+                else
+                {
+                    _isMove = false;
+                    _isReturn = false;
+                    _movePos = Vector3.zero;
+
+                }
+
+                //EnemyPatrol();
+                // TODO : 필요하면 패트롤 함수 넣어서 움직이게 해도 좋다.
+            }
+
+        }
+
+        _animator.SetBool(_hashMove, _isMove);
+
+
+
+
+    }
+
+    // 이동 전용
+    private void OnTargetMove_Fixed()
+    {
+        if(_rb == null)
+        {
+            return;
+        }
+
+        if (_isMove == true)
+        {
+            float speed = _isReturn ? 1.5f * _moveSpeed : _moveSpeed;
+
+            _rb.velocity = new Vector3(_movePos.x * speed , 0f , _movePos.z * speed);
+
+        }
+
+        else
+        {
+            _rb.velocity = new Vector3(0f, 0f, 0f);
+        }
+
+    }
+
+
+    #endregion
+
 
 
     private void OnAttack()
