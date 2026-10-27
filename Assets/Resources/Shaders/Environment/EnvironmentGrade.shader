@@ -2,8 +2,10 @@ Shader "Hidden/Espoir/EnvironmentGrade"
 {
     HLSLINCLUDE
     #include "Packages/com.unity.postprocessing/PostProcessing/Shaders/StdLib.hlsl"
+    #include "EnvironmentHeatHaze.hlsl"
 
     TEXTURE2D_SAMPLER2D(_MainTex, sampler_MainTex);
+    TEXTURE2D_SAMPLER2D(_CharacterMask, sampler_CharacterMask);
     float4 _Grade;
     float3 _ShadowTone;
     float3 _HighlightTone;
@@ -12,7 +14,13 @@ Shader "Hidden/Espoir/EnvironmentGrade"
 
     float4 Frag(VaryingsDefault i) : SV_Target
     {
-        float3 col = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.texcoord).rgb * _Grade.x;
+        float3 source = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.texcoord).rgb;
+        float2 maskUV = HeatHazeSample(i.texcoord).xy;
+        float mask = SAMPLE_TEXTURE2D(_CharacterMask, sampler_CharacterMask, maskUV).r;
+        [branch]
+        if (mask >= 1.0) return float4(source, 1.0);
+
+        float3 col = source * _Grade.x;
         col /= 1.0 + max(col - 0.85, 0.0) * 0.9;
         float3 ungraded = col;
         float luminance = dot(col, float3(0.299, 0.587, 0.114));
@@ -26,7 +34,7 @@ Shader "Hidden/Espoir/EnvironmentGrade"
         col = lerp(col, col * _VignetteColor * 1.8, vignette * _Detail.x);
         float grain = frac(sin(dot(i.texcoord * 1024.0 + frac(_Detail.z), float2(12.9898, 78.233))) * 43758.5453);
         col += (grain - 0.5) * _Detail.y;
-        return float4(max(col, 0.0), 1.0);
+        return float4(lerp(max(col, 0.0), source, mask), 1.0);
     }
     ENDHLSL
 

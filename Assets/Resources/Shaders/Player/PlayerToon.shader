@@ -74,10 +74,10 @@ Shader "Espoir/PlayerToon"
     float _OutlineWidth, _OutlineTex, _OutlineDark, _OutlineZ; float4 _OutlineColor;
 
     // CToonHeadTracker 가 매 프레임 설정
-    float4 _ToonHeadCenter, _ToonHeadUp, _ToonHeadForward, _ToonHeadRight;
+    float4 _ToonHeadCenter, _ToonHeadUp, _ToonHeadForward;
     float _ToonHeadRadius;
 
-    float luma(float3 c) { return dot(c, float3(0.2126, 0.7152, 0.0722)); }
+    float Luma(float3 c) { return dot(c, float3(0.2126, 0.7152, 0.0722)); }
     ENDCG
 
     SubShader
@@ -133,7 +133,7 @@ Shader "Espoir/PlayerToon"
             }
 
             // 텍스처에서 금색 장식 영역 추출 (sRGB 기준 HSV 판정)
-            float goldMask(float3 lin)
+            float GoldMask(float3 lin)
             {
                 float3 c = pow(max(lin, 0), 1.0 / 2.2);
                 float mx = max(max(c.r, c.g), c.b);
@@ -145,7 +145,7 @@ Shader "Espoir/PlayerToon"
             }
 
             // 채도가 낮고 밝은 부분을 칼날 영역으로 분류한다.
-            float steelMask(float3 lin)
+            float SteelMask(float3 lin)
             {
                 float3 c = pow(max(lin, 0), 1.0 / 2.2);
                 float mx = max(max(c.r, c.g), c.b);
@@ -158,7 +158,7 @@ Shader "Espoir/PlayerToon"
             {
                 float3 rawAlbedo = tex2D(_MainTex, i.uv).rgb * _Color.rgb;
                 float3 albedo = pow(max(rawAlbedo, 0), _AlbedoGamma);
-                float la = luma(albedo);
+                float la = Luma(albedo);
                 albedo = max(lerp(la.xxx, albedo, _AlbedoSat), 0);
 
                 int part = (int)(_Part + 0.5);
@@ -169,7 +169,7 @@ Shader "Espoir/PlayerToon"
                 if (part != 1) N = normalize(lerp(N, SN, _SoftNormal));
                 float3 V = normalize(_WorldSpaceCameraPos - i.worldPos);
                 float3 L = normalize(_WorldSpaceLightPos0.xyz);
-                float3 up = _ToonHeadUp.xyz, fwd = _ToonHeadForward.xyz, right = _ToonHeadRight.xyz;
+                float3 up = _ToonHeadUp.xyz, fwd = _ToonHeadForward.xyz;
                 float3 hp = i.worldPos - _ToonHeadCenter.xyz;
                 float radius = max(_ToonHeadRadius, 1e-3);
 
@@ -231,8 +231,8 @@ Shader "Espoir/PlayerToon"
                 float3 H = normalize(L + V);
                 float NdotH = max(dot(N, H), 0);
                 float litMask = smoothstep(0.38, 0.6, lf);
-                float gGold = part == 3 ? goldMask(rawAlbedo) : 0;
-                float gSteel = part == 3 && _MetalSteel > 0 ? steelMask(rawAlbedo) * _MetalSteel : 0;
+                float gGold = part == 3 ? GoldMask(rawAlbedo) : 0;
+                float gSteel = part == 3 && _MetalSteel > 0 ? SteelMask(rawAlbedo) * _MetalSteel : 0;
                 float gm = max(gGold, gSteel);
                 float3 metalTint = lerp(_MetalTint.rgb, _MetalSteelTint.rgb, gSteel / max(gGold + gSteel, 1e-4));
 
@@ -240,9 +240,9 @@ Shader "Espoir/PlayerToon"
                 float3 shaded = albedo * ramp;
                 if (part == 3 && _ClothHueKeep > 0)
                 {
-                    float rl = luma(ramp);
+                    float rl = Luma(ramp);
                     float satBoost = lerp(1.0, 1.25, saturate((1.0 - rl) * 2.0));
-                    float3 keep = max(lerp(luma(albedo).xxx, albedo, satBoost), 0) * rl;
+                    float3 keep = max(lerp(Luma(albedo).xxx, albedo, satBoost), 0) * rl;
                     shaded = lerp(shaded, keep, _ClothHueKeep);
                 }
                 float3 col = shaded * lightCol + albedo * _Ambient.rgb * _AmbientStrength;

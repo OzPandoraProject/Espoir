@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42141cf8eb324aad8935776fa0250525, type: 3}
+  m_Name: PlayerBasicAttack
+  m_EditorClassIdentifier: 
+  _type: 0
+  _cooldown: 0
+  _startTrigger: Attack
+  _comboTrigger: Combo
+  _rotationSpeed: 1080
+  _comboGraceTime: 0.8
+  _dashDuration: 0.25
+  _steps:
+  - stateName: Attack
+    recoverStateName: AttackRecover
+    moveDistance: 0.25
+    moveStart: 0.1
+    moveEnd: 0.6
+    hits:
+    - time: 0.5
+      damageRatio: 1
+      hitStopDuration: 0.045
+      offset: {x: 0, y: 0, z: 1}
+      size: {x: 2, y: 2, z: 2}
+    effectPrefab: {fileID: 8820949338032132556, guid: 9f9d2b0c9295a394ea587f4a7a0a0f84, type: 3}
+    effectTime: 0.5053846
+    effectLifetime: 0.6
+  - stateName: Attack2
+    recoverStateName: Attack2Recover
+    moveDistance: 0.3
+    moveStart: 0.1
+    moveEnd: 0.6
+    hits:
+    - time: 0.45
+      damageRatio: 1
+      hitStopDuration: 0.065
+      offset: {x: 0, y: 0, z: 1}
+      size: {x: 2, y: 2, z: 2}
+    effectPrefab: {fileID: 828870092271869250, guid: 962d4a227e93a214b8ea2a07493dcd4a, type: 3}
+    effectTime: 0.45
+    effectLifetime: 0.6
+  - stateName: Attack3
+    recoverStateName: 
+    moveDistance: 0.45
+    moveStart: 0.1
+    moveEnd: 0.7
+    hits:
+    - time: 0.3
+      damageRatio: 1
+      hitStopDuration: 0.035
+      offset: {x: 0, y: 0, z: 1}
+      size: {x: 2, y: 2, z: 2}
+    - time: 0.33
+      damageRatio: 1
+      hitStopDuration: 0.05
+      offset: {x: 0, y: 0, z: 1}
+      size: {x: 2, y: 2, z: 2}
+    - time: 0.36
+      damageRatio: 1
+      hitStopDuration: 0.12
+      offset: {x: 0, y: 0, z: 1}
+      size: {x: 2, y: 2, z: 2}
+    effectPrefab: {fileID: 3912727732374683152, guid: 669647336b5726e43ae0ac6875ea58c1, type: 3}
+    effectTime: 0.318
+    effectLifetime: 0.6
