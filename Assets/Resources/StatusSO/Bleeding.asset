@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b00a2f5381819c4787825906254b3b2, type: 3}
+  m_Name: Bleeding
+  m_EditorClassIdentifier: 
+  _id: 5
+  _name: "\uCD9C\uD608"
+  _icon: {fileID: 0}
+  _description: "\uC9C0\uC18D\uC2DC\uAC04\uB3D9\uC548 \uCD9C\uD608 \uB300\uBBF8\uC9C0\uB97C
+    \uBC1B\uB294\uB2E4."
+  _tooltip: 
+  _duration: 2
+  _stack: 2
+  _remove: 0
+  _stackDuration: 0
+  _actionList:
+  - action: 12
+    param: 0.01
