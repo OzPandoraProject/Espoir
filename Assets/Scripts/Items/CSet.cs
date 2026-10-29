@@ -10,8 +10,7 @@ public class CSet
     protected string _name;
     protected string _description;
 
-    private List<Action<CPlayer>> _onEarlyCalculate;
-    private List<Action<CPlayer>> _onLateCalculate;
+    private List<SStatusOnApply> _onCalculate;
     private List<CStatus> _equipmentStatus;
 
     public CSetSO OriginSet => _originSet;
@@ -31,24 +30,9 @@ public class CSet
         return new CSet(targetSO, setCount);
     }
 
-    public void OnEarlySync(CPlayer player)
+    public List<SStatusOnApply> OnSync()
     {
-        if (_onEarlyCalculate == null || _onEarlyCalculate.Count == 0) return;
-
-        for (int i = 0; i < _onEarlyCalculate.Count; i++)
-        {
-            _onEarlyCalculate[i](player);
-        }
-    }
-
-    public void OnLateSync(CPlayer player)
-    {
-        if (_onLateCalculate == null || _onLateCalculate.Count == 0) return;
-
-        for (int i = 0; i < _onLateCalculate.Count; i++)
-        {
-            _onLateCalculate[i](player);
-        }
+        return _onCalculate;
     }
 
     public void OnStatusSync(CPlayer player)
@@ -68,8 +52,7 @@ public class CSet
         this._name = targetSet.Name;
         this._description = targetSet.Description;
 
-        _onEarlyCalculate = new List<Action<CPlayer>>();
-        _onLateCalculate = new List<Action<CPlayer>>();
+        _onCalculate = new List<SStatusOnApply>();
         _equipmentStatus = new List<CStatus>();
 
         if (setCount >= 2)
@@ -84,54 +67,54 @@ public class CSet
                     case EEquipmentAction.None:
                         break;
                     case EEquipmentAction.IncreaseHpMax:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.HpMaxBaseline += param
+                        _onCalculate.Add(
+                            new SStatusOnApply(EStatusStats.Hp, param, true)
                             );
                         break;
                     case EEquipmentAction.MultiplyHpMax:
-                        _onLateCalculate.Add(
-                           (CPlayer player) => player.HpMaxBaseline *= param
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Hp, param, false)
                            );
                         break;
                     case EEquipmentAction.IncreaseAttack:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.AttackBaseline += param
-                            );
-                        break;
-                    case EEquipmentAction.MultiplyAttack:
-                        _onLateCalculate.Add(
-                           (CPlayer player) => player.AttackBaseline *= param
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Attack, param, true)
                            );
                         break;
+                    case EEquipmentAction.MultiplyAttack:
+                        _onCalculate.Add(
+                          new SStatusOnApply(EStatusStats.Attack, param, false)
+                          );
+                        break;
                     case EEquipmentAction.IncreaseDefence:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.DefenceBaseline += param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Defence, param, true)
+                           );
                         break;
                     case EEquipmentAction.MultiplyDefence:
-                        _onLateCalculate.Add(
-                            (CPlayer player) => player.DefenceBaseline *= param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Defence, param, false)
+                           );
                         break;
                     case EEquipmentAction.IncreaseCritRate:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.CritRateBaseline += param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritRate, param, true)
+                           );
                         break;
                     case EEquipmentAction.MultiplyCritRate:
-                        _onLateCalculate.Add(
-                            (CPlayer player) => player.CritRateBaseline *= param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritRate, param, false)
+                           );
                         break;
                     case EEquipmentAction.IncreaseCritDmg:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.CritDmgBaseline += param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritDmg, param, true)
+                           );
                         break;
                     case EEquipmentAction.MultiplyCritDmg:
-                        _onLateCalculate.Add(
-                            (CPlayer player) => player.CritDmgBaseline *= param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritDmg, param, false)
+                           );
                         break;
                 }
             }
@@ -153,54 +136,54 @@ public class CSet
                     case EEquipmentAction.None:
                         break;
                     case EEquipmentAction.IncreaseHpMax:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.HpMaxBaseline += param
+                        _onCalculate.Add(
+                            new SStatusOnApply(EStatusStats.Hp, param, true)
                             );
                         break;
                     case EEquipmentAction.MultiplyHpMax:
-                        _onLateCalculate.Add(
-                           (CPlayer player) => player.HpMaxBaseline *= param
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Hp, param, false)
                            );
                         break;
                     case EEquipmentAction.IncreaseAttack:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.AttackBaseline += param
-                            );
-                        break;
-                    case EEquipmentAction.MultiplyAttack:
-                        _onLateCalculate.Add(
-                           (CPlayer player) => player.AttackBaseline *= param
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Attack, param, true)
                            );
                         break;
+                    case EEquipmentAction.MultiplyAttack:
+                        _onCalculate.Add(
+                          new SStatusOnApply(EStatusStats.Attack, param, false)
+                          );
+                        break;
                     case EEquipmentAction.IncreaseDefence:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.DefenceBaseline += param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Defence, param, true)
+                           );
                         break;
                     case EEquipmentAction.MultiplyDefence:
-                        _onLateCalculate.Add(
-                            (CPlayer player) => player.DefenceBaseline *= param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Defence, param, false)
+                           );
                         break;
                     case EEquipmentAction.IncreaseCritRate:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.CritRateBaseline += param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritRate, param, true)
+                           );
                         break;
                     case EEquipmentAction.MultiplyCritRate:
-                        _onLateCalculate.Add(
-                            (CPlayer player) => player.CritRateBaseline *= param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritRate, param, false)
+                           );
                         break;
                     case EEquipmentAction.IncreaseCritDmg:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.CritDmgBaseline += param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritDmg, param, true)
+                           );
                         break;
                     case EEquipmentAction.MultiplyCritDmg:
-                        _onLateCalculate.Add(
-                            (CPlayer player) => player.CritDmgBaseline *= param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritDmg, param, false)
+                           );
                         break;
                 }
             }
@@ -223,54 +206,54 @@ public class CSet
                     case EEquipmentAction.None:
                         break;
                     case EEquipmentAction.IncreaseHpMax:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.HpMaxBaseline += param
+                        _onCalculate.Add(
+                            new SStatusOnApply(EStatusStats.Hp, param, true)
                             );
                         break;
                     case EEquipmentAction.MultiplyHpMax:
-                        _onLateCalculate.Add(
-                           (CPlayer player) => player.HpMaxBaseline *= param
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Hp, param, false)
                            );
                         break;
                     case EEquipmentAction.IncreaseAttack:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.AttackBaseline += param
-                            );
-                        break;
-                    case EEquipmentAction.MultiplyAttack:
-                        _onLateCalculate.Add(
-                           (CPlayer player) => player.AttackBaseline *= param
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Attack, param, true)
                            );
                         break;
+                    case EEquipmentAction.MultiplyAttack:
+                        _onCalculate.Add(
+                          new SStatusOnApply(EStatusStats.Attack, param, false)
+                          );
+                        break;
                     case EEquipmentAction.IncreaseDefence:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.DefenceBaseline += param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Defence, param, true)
+                           );
                         break;
                     case EEquipmentAction.MultiplyDefence:
-                        _onLateCalculate.Add(
-                            (CPlayer player) => player.DefenceBaseline *= param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.Defence, param, false)
+                           );
                         break;
                     case EEquipmentAction.IncreaseCritRate:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.CritRateBaseline += param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritRate, param, true)
+                           );
                         break;
                     case EEquipmentAction.MultiplyCritRate:
-                        _onLateCalculate.Add(
-                            (CPlayer player) => player.CritRateBaseline *= param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritRate, param, false)
+                           );
                         break;
                     case EEquipmentAction.IncreaseCritDmg:
-                        _onEarlyCalculate.Add(
-                            (CPlayer player) => player.CritDmgBaseline += param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritDmg, param, true)
+                           );
                         break;
                     case EEquipmentAction.MultiplyCritDmg:
-                        _onLateCalculate.Add(
-                            (CPlayer player) => player.CritDmgBaseline *= param
-                            );
+                        _onCalculate.Add(
+                           new SStatusOnApply(EStatusStats.CritDmg, param, false)
+                           );
                         break;
                 }
             }

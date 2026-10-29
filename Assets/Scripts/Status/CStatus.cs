@@ -4,6 +4,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum EStatusStats
+{
+    Hp = 0,
+    Attack = 1,
+    Defence = 2,
+    CritRate = 3,
+    CritDmg = 4,
+    Movement = 5,
+    AttackSpeed = 6,
+}
+
+public struct SStatusOnApply
+{
+    public EStatusStats target;
+    public float value;
+    public bool isConstant;
+
+    public SStatusOnApply(EStatusStats target, float value, bool isConstant)
+    {
+        this.target = target;
+        this.value = value;
+        this.isConstant = isConstant;
+    }
+}
+
 public enum EStatusStack
 {
     [InspectorName("스택이 쌓이고, 지속시간이 갱신됨")]
@@ -130,8 +155,8 @@ public partial class CStatus
 
 
     // private List<Action<CUnit>> _onEquip = new List<Action<CUnit>>();
-    private List<Action<CUnit>> _onApply = new List<Action<CUnit>>();
-    private List<Action<CUnit>> _onRemove = new List<Action<CUnit>>();
+    private List<SStatusOnApply> _onApply = new List<SStatusOnApply>();
+    private List<SStatusOnApply> _onRemove = new List<SStatusOnApply>();
     private List<Func<CUnit, CUnit, float, float>> _onAttack = new List<Func<CUnit, CUnit, float, float>>();
     private List<Func<CUnit, CUnit, float, float>> _onDefence = new List<Func<CUnit, CUnit, float, float>>();
     private List<Action<CUnit>> _onDelta = new List<Action<CUnit>>();
@@ -142,12 +167,12 @@ public partial class CStatus
     //    get => _onEquip;
     //}
 
-    public List<Action<CUnit>> OnApply
+    public List<SStatusOnApply> OnApply
     {
         get => _onApply;
     }
 
-    public List<Action<CUnit>> OnRemove
+    public List<SStatusOnApply> OnRemove
     {
         get => _onRemove;
     }

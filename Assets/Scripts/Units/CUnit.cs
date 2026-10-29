@@ -53,6 +53,8 @@ public abstract class CUnit : MonoBehaviour
     [SerializeField] protected float _baseHpMax;
     [SerializeField] protected float _baseAttack;
     [SerializeField] protected float _baseDefence;
+    protected float _baseCritRate = 0.05f;
+    protected float _baseCritDmg = 1.5f;
     #endregion
 
     #region 내부 변수
@@ -63,6 +65,9 @@ public abstract class CUnit : MonoBehaviour
 
     protected float _critRate = 0.05f;
     protected float _critDmg = 1.5f;
+
+    protected float _movementMultiply = 1;
+    protected float _attackSpeedMultiply = 1;
 
     protected List<CStatus> _status;
     #endregion
@@ -103,6 +108,13 @@ public abstract class CUnit : MonoBehaviour
 
     protected virtual void Update()
     {
+
+    }
+
+    public virtual void ResyncStatus()
+    {
+        // TODO : status 적용하기
+        // TODO : 실제 값에 집어넣기
 
     }
 
@@ -258,45 +270,20 @@ public abstract class CUnit : MonoBehaviour
         if (FindStatusStack(id) <= 0)
         {
             _status.Add(status);
-            if (status.Trigger.HasFlag(EStatusTrigger.OnApply))
-            {
-                for (int i = 0; i < status.OnApply.Count; i++)
-                {
-                    status.OnApply[i](this);
-                }
-            }
+            ResyncStatus();
             return;
         }
         CStatus currentStatus = FindStatus(id);
         switch (status.StackSwitch)
         {
             case EStatusStack.StackAndRefresh:
-                if (currentStatus.Trigger.HasFlag(EStatusTrigger.OnRemove))
-                {
-                    for (int i = 0; i < status.OnRemove.Count; i++)
-                    {
-                        currentStatus.OnRemove[i](this);
-                    }
-                }
                 currentStatus.Stack += stack;
                 currentStatus.ResetTimer(duration);
-                if (currentStatus.Trigger.HasFlag(EStatusTrigger.OnApply))
-                {
-                    for (int i = 0; i < status.OnApply.Count; i++)
-                    {
-                        currentStatus.OnApply[i](this);
-                    }
-                }
+                ResyncStatus();
                 break;
             case EStatusStack.StackIndividual:
                 _status.Add(status);
-                if (status.Trigger.HasFlag(EStatusTrigger.OnApply))
-                {
-                    for (int i = 0; i < status.OnApply.Count; i++)
-                    {
-                        status.OnApply[i](this);
-                    }
-                }
+                ResyncStatus();
                 break;
             case EStatusStack.Refresh:
                 currentStatus.ResetTimer(duration);
