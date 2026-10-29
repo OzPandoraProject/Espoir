@@ -30,7 +30,7 @@ public enum EStatusTrigger
 {
     None = 0,           // 자체적으로 효과 없는 경우
     // 트리거 플래그
-    OnEquip = 1 << 0,   // 장비로서 적용되는 경우
+    OnEquip = 1 << 0,   // (Deprecated) 장비로서 적용되는 경우
     OnApply = 1 << 1,   // 적용될 때 적용되는 효과가 있는 경우
     OnRemove = 1 << 2,  // 사라질 때 적용되는 효과가 있는 경우 (Apply한거 있으면 여기서 해제해야함!
     OnAttack = 1 << 3,  // 공격할 때 적용되는 효과가 있는 경우
@@ -50,9 +50,9 @@ public enum EStatusAction
     MultiplyAttack,
     [InspectorName("방어력 비율 변화")]
     MultiplyDefence,
-    [InspectorName("치명타확률 비율 변화 (상수/플레이어용)")]
+    [InspectorName("치명타확률 비율 변화 (상수, 플레이어용)")]
     AddCriticalRate,
-    [InspectorName("치명타확률 비율 변화 (비율/플레이어용)")]
+    [InspectorName("치명타확률 비율 변화 (비율, 플레이어용)")]
     MultiplyCriticalRate,
     [InspectorName("치명타피해 비율 변화 (플레이어용)")]
     MultiplyCriticalDmg,
@@ -68,6 +68,8 @@ public enum EStatusAction
     DamageOverTime,
     [InspectorName("최대체력 비례 지속피해")]
     DamageOverTimeByRatio,
+    [InspectorName("공격속도 변화")]
+    MultiplyAttackSpeed,
     [InspectorName("커스텀 - OnApply")]
     CustomActionOnApply,
     [InspectorName("커스텀 - OnAttack")]
@@ -96,7 +98,7 @@ public struct SStatusApply
 }
 
 
-public class CStatus
+public partial class CStatus
 {
     private int _id;
     private float _duration;
@@ -106,16 +108,28 @@ public class CStatus
     private Image _image;
     private int _stack;
     private EStatusStack _stackSwitch;
-
+    private EStatusRemove _removeSwitch;
+    private float _removeTimer;
     private EStatusTrigger _trigger;
 
-    public EStatusTrigger Trigger => _trigger;
+    public int Id => _id;
     public float Duration => _duration;
-    public int Stack => _stack;
+    public string Name => _name;
+    public string Description => _description;
+    public string Tooltip => _tooltip;
+    public Image Image => _image;
+    public int Stack
+    {
+        get { return _stack; }
+        set { _stack = value; }
+    }
     public EStatusStack StackSwitch => _stackSwitch;
+    public EStatusRemove RemoveSwitch => _removeSwitch;
+    public float RemoveTimer => _removeTimer;
+    public EStatusTrigger Trigger => _trigger;
 
 
-    private List<Action<CUnit>> _onEquip = new List<Action<CUnit>>();
+    // private List<Action<CUnit>> _onEquip = new List<Action<CUnit>>();
     private List<Action<CUnit>> _onApply = new List<Action<CUnit>>();
     private List<Action<CUnit>> _onRemove = new List<Action<CUnit>>();
     private List<Func<CUnit, CUnit, float, float>> _onAttack = new List<Func<CUnit, CUnit, float, float>>();
@@ -123,10 +137,10 @@ public class CStatus
     private List<Action<CUnit>> _onDelta = new List<Action<CUnit>>();
     private List<Action<CUnit, bool>> _onBattleEnd = new List<Action<CUnit, bool>>();
 
-    public List<Action<CUnit>> OnEquip
-    {
-        get => _onEquip;
-    }
+    //public List<Action<CUnit>> OnEquip
+    //{
+    //    get => _onEquip;
+    //}
 
     public List<Action<CUnit>> OnApply
     {
@@ -174,6 +188,11 @@ public class CStatus
         CStatus status = new CStatus();
         status.Setup(id, duration, stack);
         return status;
+    }
+
+    public void ResetTimer(float t = -1)
+    {
+        
     }
 
     public void Setup(int id, float duration = -1, int stack = 1)

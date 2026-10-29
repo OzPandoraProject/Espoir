@@ -64,9 +64,7 @@ public abstract class CUnit : MonoBehaviour
     protected float _critRate = 0.05f;
     protected float _critDmg = 1.5f;
 
-    protected bool _isStunned = false;
-
-    protected List<CStatus> _statuses;
+    protected List<CStatus> _status;
     #endregion
 
     #region 프로퍼티
@@ -78,9 +76,20 @@ public abstract class CUnit : MonoBehaviour
     public float CriticalRate => _critRate;
     public float CriticalDamage => _critDmg;
 
-    public bool IsStunned => _isStunned;
+    public bool IsStunned
+    {
+        get
+        {
+            bool temp = false;
+            for(int i = 0; i < _status.Count; i++)
+            {
+                if (_status[i].Trigger.HasFlag(EStatusTrigger.IsStun)) temp = true;
+            }
+            return temp;
+        }
+    }
 
-    public IReadOnlyList<CStatus> Status => _statuses;
+    public IReadOnlyList<CStatus> Status => _status;
     #endregion
 
     protected virtual void Awake()
@@ -89,7 +98,12 @@ public abstract class CUnit : MonoBehaviour
         _hpCurrent = _hpMax;
         _attack = _baseAttack;
         _defence = _baseDefence;
-        _statuses = new List<CStatus>();
+        _status = new List<CStatus>();
+    }
+
+    protected virtual void Update()
+    {
+
     }
 
     /// <summary>
@@ -234,23 +248,90 @@ public abstract class CUnit : MonoBehaviour
         }
     }
 
-    public void GetStunned()
+    /// <summary>
+    /// 상태이상을 id로 찾아서, 만들어서 부여합니다.
+    /// </summary>
+    /// <param name="id"></param>
+    public void AddStatus(int id, float duration = -1, int stack = 1)
     {
-        if (!_isStunned) _isStunned = true; 
-    }
-
-    public void ReleaseStunned(CStatus status)
-    {
-        int count = 0;
-        for (int i = 0; i < _statuses.Count; i++)
+        CStatus status = CStatus.MakeStatus(id, duration, stack);
+        if (FindStatusStack(id) <= 0)
         {
-            if (_statuses[i].Trigger.HasFlag(EStatusTrigger.IsStun)) count++;
+            _status.Add(status);
+            if (status.Trigger.HasFlag(EStatusTrigger.OnApply))
+            {
+                for (int i = 0; i < status.OnApply.Count; i++)
+                {
+                    status.OnApply[i](this);
+                }
+            }
+            return;
         }
-        if (count <= 1) _isStunned = false;
+        CStatus currentStatus = FindStatus(id);
+        switch (status.StackSwitch)
+        {
+            case EStatusStack.StackAndRefresh:
+                if (currentStatus.Trigger.HasFlag(EStatusTrigger.OnRemove))
+                {
+                    for (int i = 0; i < status.OnRemove.Count; i++)
+                    {
+                        currentStatus.OnRemove[i](this);
+                    }
+                }
+                currentStatus.Stack += stack;
+                currentStatus.ResetTimer(duration);
+                if (currentStatus.Trigger.HasFlag(EStatusTrigger.OnApply))
+                {
+                    for (int i = 0; i < status.OnApply.Count; i++)
+                    {
+                        currentStatus.OnApply[i](this);
+                    }
+                }
+                break;
+            case EStatusStack.StackIndividual:
+                _status.Add(status);
+                if (status.Trigger.HasFlag(EStatusTrigger.OnApply))
+                {
+                    for (int i = 0; i < status.OnApply.Count; i++)
+                    {
+                        status.OnApply[i](this);
+                    }
+                }
+                break;
+            case EStatusStack.Refresh:
+                currentStatus.ResetTimer(duration);
+                break;
+            case EStatusStack.Ignore:
+                break;
+        }
     }
 
+    /// <summary>
+    /// 이미 선언되어있는 상태이상을 부여합니다.
+    /// </summary>
+    /// <param name="status"></param>
     public void AddStatus(CStatus status)
     {
+        AddStatus(status.Id, status.Duration, status.Stack);
+    }
 
+    public int FindStatusStack(int id)
+    {
+        return 0;
+    }
+
+    public CStatus FindStatus(int id)
+    {
+        return null;
+    }
+
+    public int RemoveStatus(int id)
+    {
+        return 0;
+    }
+
+    public int RemoveStatus(CStatus status)
+    {
+        return 0;
     }
 }

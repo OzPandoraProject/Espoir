@@ -1885,6 +1885,8 @@ GameObject:
   - component: {fileID: 472875766}
   - component: {fileID: 472875770}
   - component: {fileID: 472875771}
+  - component: {fileID: 472875773}
+  - component: {fileID: 472875772}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -1949,54 +1951,16 @@ MonoBehaviour:
   _baseHpMax: 100
   _baseAttack: 20
   _baseDefence: 0
-  _moveSpeed: 5
-  _rotationSpeed: 720
-  _groundSnapDistance: 0.6
   _mainCamera: {fileID: 976528954}
   _testCamera: {fileID: 976528958}
   _groundLayer:
     serializedVersion: 2
     m_Bits: 8
-  _dashDistance: 8
-  _dashDuration: 0.25
-  _dashCooldown: 0.5
-  _playerAttack: {fileID: 472875771}
-  _attackRotationSpeed: 1080
-  _attackSteps:
-  - stateName: Attack
-    recoverStateName: AttackRecover
-    moveDistance: 0.25
-    moveStart: 0.1
-    moveEnd: 0.6
-    hits:
-    - time: 0.5
-      hitStopDuration: 0.045
-  - stateName: Attack2
-    recoverStateName: Attack2Recover
-    moveDistance: 0.3
-    moveStart: 0.1
-    moveEnd: 0.6
-    hits:
-    - time: 0.45
-      hitStopDuration: 0.065
-  - stateName: Attack3
-    recoverStateName: 
-    moveDistance: 0.45
-    moveStart: 0.1
-    moveEnd: 0.7
-    hits:
-    - time: 0.3
-      hitStopDuration: 0.035
-    - time: 0.33
-      hitStopDuration: 0.05
-    - time: 0.36
-      hitStopDuration: 0.12
-  _comboGraceTime: 0.8
   _moveClick: {fileID: -6490676298341847733, guid: 9614690e9b07cd14abd0a8014fcfd61d, type: 3}
   _pointerPosition: {fileID: 8317287691473175666, guid: 9614690e9b07cd14abd0a8014fcfd61d, type: 3}
   _attackInput: {fileID: -7463943481848816300, guid: 9614690e9b07cd14abd0a8014fcfd61d, type: 3}
   _dashInput: {fileID: 4067803648963240158, guid: 9614690e9b07cd14abd0a8014fcfd61d, type: 3}
-  _animator: {fileID: 215884960}
+  _skillSlots: []
 --- !u!114 &472875771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2009,11 +1973,46 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a21a1f65867f054bb118f92d47a4ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attackOffset: {x: 0, y: 0, z: 1}
-  _attackSize: {x: 2, y: 2, z: 2}
   _targetLayer:
     serializedVersion: 2
     m_Bits: 128
+  _previewSkill: {fileID: 0}
+--- !u!114 &472875772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472875765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74410abbcdb04e528ecf67cd3a97c377, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _basicAttack: {fileID: 0}
+  _dash: {fileID: 0}
+  _playerAttack: {fileID: 0}
+  _animator: {fileID: 0}
+  _cancelTransitionDuration: 0.05
+--- !u!114 &472875773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 472875765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43e0c594b8c5488fbcc926cb8a0ea1dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _moveSpeed: 5
+  _rotationSpeed: 720
+  _groundSnapDistance: 0.6
+  _groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  _animator: {fileID: 0}
 --- !u!1 &484755370 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6285209290496832306, guid: 67ddb690e8bc43439efb218ba32a3d45, type: 3}

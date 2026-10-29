@@ -1,6 +1,6 @@
 ﻿using System;
 
-public abstract class CItemEtc: CItem
+public class CItemEtc: CItem
 {
     public override bool AvailableInLobby() => false;
     public override bool AvailableInBattle() => false;

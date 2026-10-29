@@ -17,13 +17,11 @@ MonoBehaviour:
   _itemIcon: {fileID: 0}
   _description: 
   _action:
-  - effect: 0
-    value: 0
-  - effect: 0
-    value: 0
+  - effect: 1
+    value: 50
+  - effect: 3
+    value: 0.15
   _itemStatus:
   - statusId: 0
-    duration: 0
-  - statusId: 0
-    duration: 0
+    duration: 3
   _isThrow: 0

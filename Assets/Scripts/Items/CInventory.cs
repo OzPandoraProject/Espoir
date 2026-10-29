@@ -10,11 +10,16 @@ using System.Collections.Generic;
 
 public class CInventory
 {
-    private CItem[] _items;
+    private List<CItem> _items = new List<CItem>();
     private static readonly int _maxItemSlot = 50;
 
     public CInventory()
     {
-        _items = new CItem[_maxItemSlot];
+        
+    }
+
+    public void AddItem(int id)
+    {
+        _items.Add(CItem.MakeItem(id));
     }
 }

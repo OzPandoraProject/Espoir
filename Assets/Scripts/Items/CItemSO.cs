@@ -52,27 +52,16 @@ public class CItemSO : ScriptableObject
             }
         }
 
-        //CItemEquipmentSO[] equipments = Resources.LoadAll<CItemEquipmentSO>("ItemSO");
-        //if (equipments == null || equipments.Length == 0)
-        //{
-        //    CLogger.Warn($"CItemSO : 장비가 없음");
-        //}
-        //else
-        //{
-        //    for (int i = 0; i < equipments.Length; i++)
-        //    {
-        //        if (equipments[i] == null)
-        //        {
-        //            CLogger.Error($"CStatusSO : 딕셔너리 생성 중 에러 발생 - {i}");
-        //            continue;
-        //        }
-        //        _idToItem.Add(equipments[i]._id, equipments[i]);
-        //        _stringToItem.Add(equipments[i]._name, equipments[i]);
-        //    }
-        //}
-
         return;
     }
 
+    public static CItemSO Find(int id)
+    {
+        return _idToItem[id];
+    }
 
+    public static CItemSO Find(string name)
+    {
+        return _stringToItem[name];
+    }
 }

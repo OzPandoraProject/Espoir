@@ -36,8 +36,22 @@ public struct SEquipmentAction
     public float param;
 }
 
-public abstract class CItemEquipment : CItem
+public enum EEquipmentSlot
 {
+    [InspectorName("목걸이")]
+    Necklace,
+    [InspectorName("귀걸이")]
+    Earring,
+    [InspectorName("팔찌")]
+    Bracelet,
+    [InspectorName("반지")]
+    Ring,
+}
+
+public class CItemEquipment : CItem
+{
+    private EEquipmentSlot _slot;
+    private int _setNumber;
     private List<Action<CPlayer>> _onEarlyCalculate;
     private List<Action<CPlayer>> _onLateCalculate;
     private List<CStatus> _equipmentStatus;
@@ -45,6 +59,9 @@ public abstract class CItemEquipment : CItem
 
     public override bool AvailableInLobby() => true;
     public override bool AvailableInBattle() => false;
+    public EEquipmentSlot Slot => _slot;
+    public int SetNumber => _setNumber;
+
     public bool IsEquip
     {
         get => _isEquip;
@@ -60,18 +77,24 @@ public abstract class CItemEquipment : CItem
         set { value = 1; }
     }
 
+    public CItemEquipment(CItemEquipmentSO targetSO)
+    {
+        Setup(targetSO);
+    }
+
     public bool OnEquip(CPlayer player)
     {
         if (_isEquip)
         {
             CLogger.Error("이미 장착되었는데, 장착기능에 접근함. 코드구조 확인!");
         }
-        if (player.Equipment.Count >= 4)
+        if (player.Equipment[this.Slot] != null)
         {
+            CLogger.Error("슬롯에 다른 아이템이 있는데, 장착기능에 접근함. 장착취소. 코드구조 확인!");
             return false;
         }
 
-        player.Equipment.Add(this);
+        player.Equipment[this.Slot] = this;
         _isEquip = true;
         return true;
     }
@@ -82,9 +105,9 @@ public abstract class CItemEquipment : CItem
         {
             CLogger.Error("이미 해제되었는데, 해제기능에 접근함. 코드구조 확인!");
         }
-        if (player.Equipment.Contains(this))
+        if (player.Equipment[this.Slot] == this)
         {
-            player.Equipment.Remove(this);
+            player.Equipment[this.Slot] = null;
             _isEquip = false;
             return true;
         }
@@ -131,11 +154,13 @@ public abstract class CItemEquipment : CItem
 
     public override bool Setup(CItemSO targetItem)
     {
-        if (!CItemSO.IsBuilded) CItemSO.Build();
         if (targetItem is CItemEquipmentSO targetEquipment)
         {
+            this._originItem = targetEquipment;
             this._id = targetEquipment.Id;
             this._name = targetEquipment.Name;
+            this._slot = targetEquipment.Slot;
+            this._setNumber = targetEquipment.SetNumber;
             this._itemIcon = targetEquipment.ItemIcon;
             this._description = targetEquipment.Description;
 
@@ -148,7 +173,7 @@ public abstract class CItemEquipment : CItem
                 EEquipmentAction action = targetEquipment.Action[i].action;
                 float param = targetEquipment.Action[i].param;
 
-                switch (targetEquipment.Action[i].action)
+                switch (action)
                 {
                     case EEquipmentAction.None:
                         break;

@@ -32,4 +32,25 @@ public abstract class CItem
     /// <param name="quantity"></param>
     /// <returns></returns>
     public virtual bool OnDiscard(CPlayer player, int quantity) { return true; }
+
+    public static CItem MakeItem(int id)
+    {
+        if (!CItemSO.IsBuilded) CItemSO.Build();
+        CItemSO targetSO = CItemSO.Find(id);
+        if (targetSO is CItemConsumableSO consumableSO)
+        {
+            CItemConsumable targetConsumable = new CItemConsumable(consumableSO);
+            return targetConsumable;
+        }
+        else if (targetSO is CItemEquipmentSO equipmentSO)
+        {
+            CItemEquipment targetEquipment = new CItemEquipment(equipmentSO);
+            return targetEquipment;
+        }
+        else
+        {
+            CLogger.Error("CItem.MakeItem에서 오류남");
+            return null;
+        }
+    }
 }

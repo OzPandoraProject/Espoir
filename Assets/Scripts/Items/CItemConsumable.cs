@@ -23,7 +23,7 @@ public class CConsumableAction
     public float value;
 }
 
-public abstract class CItemConsumable : CItem
+public class CItemConsumable : CItem
 {
     List<Action<CUnit>> _onUse;
     List<CStatus> _itemStatus;
@@ -72,8 +72,9 @@ public abstract class CItemConsumable : CItem
 
     public override bool Setup(CItemSO targetItem)
     {
-        if(targetItem is CItemConsumableSO targetConsumable)
+        if (targetItem is CItemConsumableSO targetConsumable)
         {
+            this._originItem = targetConsumable;
             this._id = targetConsumable.Id;
             this._name = targetConsumable.Name;
             this._itemIcon = targetConsumable.ItemIcon;
