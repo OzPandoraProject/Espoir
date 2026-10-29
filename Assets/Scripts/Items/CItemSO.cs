@@ -10,7 +10,7 @@ public class CItemSO : ScriptableObject
     [Tooltip("아이템 아이콘")]
     [SerializeField] protected Sprite _itemIcon;
     [Tooltip("아이템 설명")]
-    [SerializeField] protected string _description;
+    [SerializeField][TextArea(1, 5)] protected string _description;
 
     private static Dictionary<int, CItemSO> _idToItem = new Dictionary<int, CItemSO>();
     private static Dictionary<string, CItemSO> _stringToItem = new Dictionary<string, CItemSO>();

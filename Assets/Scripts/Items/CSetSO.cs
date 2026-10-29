@@ -9,7 +9,7 @@ public class CSetSO : ScriptableObject
     [Tooltip("세트 이름")]
     [SerializeField] protected string _name;
     [Tooltip("세트 설명")]
-    [SerializeField] protected string _description;
+    [SerializeField][TextArea(1, 5)] protected string _description;
 
     [Tooltip("세트 2개 상태의 능력치 변화")]
     [SerializeField] private List<SEquipmentAction> _actionSet2;
