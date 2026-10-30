@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
+
 public class CItemSO : ScriptableObject
 {
     [Tooltip("아이템 id")]
     [SerializeField] protected int _id;
     [Tooltip("아이템 이름")]
     [SerializeField] protected string _name;
+    [Tooltip("아이템 레어도")]
+    [SerializeField] protected EItemRarity _rarity;
     [Tooltip("아이템 아이콘")]
     [SerializeField] protected Sprite _itemIcon;
     [Tooltip("아이템 설명")]
@@ -22,6 +25,7 @@ public class CItemSO : ScriptableObject
     public string Name => _name;
     public Sprite ItemIcon => _itemIcon;
     public string Description => _description;
+    public EItemRarity Rarity => _rarity;
 
     public static void Build(bool force = false)
     {

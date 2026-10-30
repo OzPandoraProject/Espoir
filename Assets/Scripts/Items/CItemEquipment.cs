@@ -146,6 +146,7 @@ public class CItemEquipment : CItem
             this._slot = targetEquipment.Slot;
             this._setNumber = targetEquipment.SetNumber;
             this._itemIcon = targetEquipment.ItemIcon;
+            this._rarity = targetEquipment.Rarity;
             this._description = targetEquipment.Description;
 
             _onCalculate = new List<SStatusOnApply>();
