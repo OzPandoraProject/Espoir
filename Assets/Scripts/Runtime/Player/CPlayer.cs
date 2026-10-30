@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -26,7 +27,169 @@ public class CPlayer : CUnit
 
     private CPlayerMovement _movement;
     private CPlayerSkill _skill;
+    private Dictionary<EEquipmentSlot, CItemEquipment> _equipment = new Dictionary<EEquipmentSlot, CItemEquipment>();
+    private List<CStatus> _equipmentStatus = new List<CStatus>();
     private bool _actionsBlocked;
+
+    protected float _hpMaxBaseline = 1;
+    protected float _attackBaseline = 0;
+    protected float _defenceBaseline = 0;
+
+    protected float _critRateBaseline = 0.05f;
+    protected float _critDmgBaseline = 1.5f;
+
+    public Dictionary<EEquipmentSlot, CItemEquipment> Equipment
+    {
+        get { return _equipment; }
+        set { _equipment = value; }
+    }
+
+    public List<CStatus> EquipmentStatus
+    {
+        get { return _equipmentStatus; }
+        set { _equipmentStatus = value; }
+    }
+
+    public float HpMaxBaseline
+    {
+        get { return _hpMaxBaseline; }
+        set { _hpMaxBaseline = value; }
+    }
+
+    public float AttackBaseline
+    {
+        get { return _attackBaseline; }
+        set { _attackBaseline = value; }
+    }
+
+    public float DefenceBaseline
+    {
+        get { return _defenceBaseline; }
+        set { _defenceBaseline = value; }
+    }
+
+    public float CritRateBaseline
+    {
+        get { return _critRateBaseline; }
+        set { _critRateBaseline = value; }
+    }
+
+    public float CritDmgBaseline
+    {
+        get { return _critDmgBaseline; }
+        set { _critDmgBaseline = value; }
+    }
+
+
+    public void EquipmentResync()
+    {
+        if (_equipmentStatus != null && _equipmentStatus.Count > 0)
+        {
+            for (int i = 0; i < _equipmentStatus.Count; i++)
+            {
+                if (!_equipmentStatus[i].Trigger.HasFlag(EStatusTrigger.OnRemove)) continue;
+                for (int j = 0; j < _equipmentStatus[i].OnRemove.Count; j++)
+                {
+                    _equipmentStatus[i].OnRemove[j](this);
+                }
+            }
+        }
+        if (_status != null && _status.Count > 0)
+        {
+            for (int i = 0; i < _status.Count; i++)
+            {
+                if (!_status[i].Trigger.HasFlag(EStatusTrigger.OnRemove)) continue;
+                for (int j = 0; j < _status[i].OnRemove.Count; j++)
+                {
+                    _status[i].OnRemove[j](this);
+                }
+            }
+        }
+
+        _equipmentStatus.Clear();
+
+        _hpMaxBaseline = _baseHpMax;
+        _attackBaseline = _baseAttack;
+        _defenceBaseline = _baseDefence;
+        _critRateBaseline = 0.05f;
+        _critDmgBaseline = 1.5f;
+
+        Dictionary<int, int> equipmentSet = new Dictionary<int, int>();
+        List<CItemEquipment> equipments = new List<CItemEquipment>(_equipment.Values);
+        for (int i = 0; i < equipments.Count; i++)
+        {
+            if (equipments[i].SetNumber != 0)
+            {
+                if (equipmentSet.ContainsKey(equipments[i].SetNumber))
+                {
+                    equipmentSet[equipments[i].SetNumber] += 1;
+                }
+                else
+                {
+                    equipmentSet[equipments[i].SetNumber] = 1;
+                }
+            }
+            equipments[i].OnEarlySync(this);
+        }
+
+        List<CSet> sets = new List<CSet>();
+        foreach (int i in equipmentSet.Keys)
+        {
+            if (equipmentSet[i] >= 2)
+            {
+                sets.Add(CSet.MakeSet(i, equipmentSet[i]));
+            }
+        }
+
+        for (int i = 0; i < sets.Count; i++)
+        {
+            sets[i].OnEarlySync(this);
+        }
+        for (int i = 0; i < equipments.Count; i++)
+        {
+            equipments[i].OnLateSync(this);
+        }
+        for (int i = 0; i < sets.Count; i++)
+        {
+            sets[i].OnLateSync(this);
+        }
+        for (int i = 0; i < equipments.Count; i++)
+        {
+            equipments[i].OnStatusSync(this);
+        }
+        for (int i = 0; i < sets.Count; i++)
+        {
+            sets[i].OnStatusSync(this);
+        }
+        _hpMax = _hpMaxBaseline;
+        _attack = _attackBaseline;
+        _defence = _defenceBaseline;
+        _critRate = _critRateBaseline;
+        _critDmg = _critDmgBaseline;
+        if (_equipmentStatus != null && _equipmentStatus.Count > 0)
+        {
+            for (int i = 0; i < _equipmentStatus.Count; i++)
+            {
+                if (!_equipmentStatus[i].Trigger.HasFlag(EStatusTrigger.OnApply)) continue;
+                for (int j = 0; j < _equipmentStatus[i].OnApply.Count; j++)
+                {
+                    _equipmentStatus[i].OnApply[j](this);
+                }
+            }
+        }
+
+        if (_status != null && _status.Count > 0)
+        {
+            for (int i = 0; i < _status.Count; i++)
+            {
+                if (!_status[i].Trigger.HasFlag(EStatusTrigger.OnApply)) continue;
+                for (int j = 0; j < _status[i].OnRemove.Count; j++)
+                {
+                    _status[i].OnApply[j](this);
+                }
+            }
+        }
+    }
 
     protected override void Awake()
     {

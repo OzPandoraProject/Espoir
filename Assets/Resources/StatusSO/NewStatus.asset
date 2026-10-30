@@ -12,9 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b00a2f5381819c4787825906254b3b2, type: 3}
   m_Name: NewStatus
   m_EditorClassIdentifier: 
-  _id: 0
+  _id: -1
   _name: 
   _icon: {fileID: 0}
   _description: 
   _tooltip: 
-  _actionList: []
+  _duration: 0
+  _stack: 0
+  _remove: 0
+  _stackDuration: 0
+  _actionList:
+  - action: 0
+    param: 0

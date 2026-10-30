@@ -11,31 +11,12 @@ public abstract class CItem
     protected string _description;
     protected int _quantity;
 
-    public CItemSO OriginItem
-    {
-        get => _originItem;
-    }
-
-    public int Id
-    {
-        get => _id;
-    }
-
-    public string Name
-    {
-        get => _name;
-    }
-
-    public Sprite ItemIcon
-    {
-        get => _itemIcon;
-    }
-
-    public string Description
-    {
-        get => _description;
-    }
-
+    public CItemSO OriginItem => _originItem;
+    public int Id => _id;
+    public string Name => _name;
+    public Sprite ItemIcon => _itemIcon;
+    public string Description => _description;
+    
     public abstract int Quantity { get; set;}
 
     public abstract bool AvailableInLobby();
@@ -51,4 +32,25 @@ public abstract class CItem
     /// <param name="quantity"></param>
     /// <returns></returns>
     public virtual bool OnDiscard(CPlayer player, int quantity) { return true; }
+
+    public static CItem MakeItem(int id)
+    {
+        if (!CItemSO.IsBuilded) CItemSO.Build();
+        CItemSO targetSO = CItemSO.Find(id);
+        if (targetSO is CItemConsumableSO consumableSO)
+        {
+            CItemConsumable targetConsumable = new CItemConsumable(consumableSO);
+            return targetConsumable;
+        }
+        else if (targetSO is CItemEquipmentSO equipmentSO)
+        {
+            CItemEquipment targetEquipment = new CItemEquipment(equipmentSO);
+            return targetEquipment;
+        }
+        else
+        {
+            CLogger.Error("CItem.MakeItem에서 오류남");
+            return null;
+        }
+    }
 }

@@ -3,36 +3,27 @@ using UnityEngine;
 
 public class CItemSO : ScriptableObject
 {
+    [Tooltip("아이템 id")]
     [SerializeField] protected int _id;
+    [Tooltip("아이템 이름")]
     [SerializeField] protected string _name;
+    [Tooltip("아이템 아이콘")]
     [SerializeField] protected Sprite _itemIcon;
-    [SerializeField] protected string _description;
+    [Tooltip("아이템 설명")]
+    [SerializeField][TextArea(1, 5)] protected string _description;
 
     private static Dictionary<int, CItemSO> _idToItem = new Dictionary<int, CItemSO>();
     private static Dictionary<string, CItemSO> _stringToItem = new Dictionary<string, CItemSO>();
     private static bool _isBuilded = false;
 
-    public int Id
-    {
-        get { return _id; }
-    }
+    public static bool IsBuilded => _isBuilded;
 
-    public string Name
-    {
-        get { return _name; }
-    }
-    
-    public Sprite ItemIcon
-    {
-        get { return _itemIcon; }
-    }
+    public int Id => _id;
+    public string Name => _name;
+    public Sprite ItemIcon => _itemIcon;
+    public string Description => _description;
 
-    public string Description
-    {
-        get { return _description; }
-    }
-
-    public static void Build(bool force)
+    public static void Build(bool force = false)
     {
         if (force || !_isBuilded) BuildInternal();
     }
@@ -42,7 +33,7 @@ public class CItemSO : ScriptableObject
         _isBuilded = true;
         _idToItem.Clear();
         _stringToItem.Clear();
-        CItemConsumableSO[] consumables = Resources.LoadAll<CItemConsumableSO>("ConsumableSO");
+        CItemSO[] consumables = Resources.LoadAll<CItemSO>("ItemSO");
         if (consumables == null || consumables.Length == 0)
         {
             CLogger.Warn($"CItemSO : 소모품이 없음");
@@ -61,27 +52,16 @@ public class CItemSO : ScriptableObject
             }
         }
 
-        CItemEquipmentSO[] equipments = Resources.LoadAll<CItemEquipmentSO>("EquipmentSO");
-        if (equipments == null || equipments.Length == 0)
-        {
-            CLogger.Warn($"CItemSO : 장비가 없음");
-        }
-        else
-        {
-            for (int i = 0; i < equipments.Length; i++)
-            {
-                if (equipments[i] == null)
-                {
-                    CLogger.Error($"CStatusSO : 딕셔너리 생성 중 에러 발생 - {i}");
-                    continue;
-                }
-                _idToItem.Add(equipments[i]._id, equipments[i]);
-                _stringToItem.Add(equipments[i]._name, equipments[i]);
-            }
-        }
-
         return;
     }
 
+    public static CItemSO Find(int id)
+    {
+        return _idToItem[id];
+    }
 
+    public static CItemSO Find(string name)
+    {
+        return _stringToItem[name];
+    }
 }
