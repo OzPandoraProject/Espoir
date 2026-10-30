@@ -11,7 +11,7 @@ using System.Collections.Generic;
 public class CInventory
 {
     private List<CItem> _items = new List<CItem>();
-    private static readonly int _maxItemSlot = 50;
+    private static readonly int _maxItemSlot = 64;
 
     public CInventory()
     {

@@ -79,6 +79,7 @@ public class CItemConsumable : CItem
             this._name = targetConsumable.Name;
             this._itemIcon = targetConsumable.ItemIcon;
             this._description = targetConsumable.Description;
+            this._rarity = targetConsumable.Rarity;
             this._isThrow = targetConsumable.IsThrow;
 
             _onUse = new List<Action<CUnit>>();

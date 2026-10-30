@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.Rendering.DebugUI;
@@ -53,6 +54,8 @@ public abstract class CUnit : MonoBehaviour
     [SerializeField] protected float _baseHpMax;
     [SerializeField] protected float _baseAttack;
     [SerializeField] protected float _baseDefence;
+    protected float _baseCritRate = 0.05f;
+    protected float _baseCritDmg = 1.5f;
     #endregion
 
     #region 내부 변수
@@ -63,6 +66,9 @@ public abstract class CUnit : MonoBehaviour
 
     protected float _critRate = 0.05f;
     protected float _critDmg = 1.5f;
+
+    protected float _movementMultiply = 1;
+    protected float _attackSpeedMultiply = 1;
 
     protected List<CStatus> _status;
     #endregion
@@ -104,6 +110,63 @@ public abstract class CUnit : MonoBehaviour
     protected virtual void Update()
     {
 
+    }
+
+    public virtual void ResyncStatus()
+    {
+        List<SStatusOnApply> effects = new List<SStatusOnApply>();
+        
+        for (int i = 0; i < _status.Count; i++)
+        {
+            if (_status[i].Trigger.HasFlag(EStatusTrigger.OnApply))
+            {
+                effects.AddRange(_status[i].OnApply);
+            }
+        }
+
+        Dictionary<EStatusStats, float> statConstant = new Dictionary<EStatusStats, float>();
+        Dictionary<EStatusStats, float> statMultiple = new Dictionary<EStatusStats, float>();
+        Dictionary<EStatusStats, float> statDivide = new Dictionary<EStatusStats, float>();
+        foreach (EStatusStats stat in Enum.GetValues(typeof(EStatusStats)))
+        {
+            statConstant.Add(stat, 0f);
+            statMultiple.Add(stat, 1f);
+            statDivide.Add(stat, 1f);
+        }
+
+        for (int i = 0; i < effects.Count; i++)
+        {
+            if (effects[i].isConstant)
+            {
+                statConstant[effects[i].target] += effects[i].value;
+            }
+            else
+            {
+                if (effects[i].value < 1f)
+                {
+                    statDivide[effects[i].target] *= effects[i].value;
+                }
+                else
+                {
+                    statMultiple[effects[i].target] += effects[i].value - 1f;
+                }
+            }
+        }
+
+        _hpMax = (_baseHpMax + statConstant[EStatusStats.Hp])
+            * statMultiple[EStatusStats.Hp] * statDivide[EStatusStats.Hp];
+        _attack = (_baseAttack + statConstant[EStatusStats.Attack])
+            * statMultiple[EStatusStats.Attack] * statDivide[EStatusStats.Attack];
+        _defence = (_baseDefence + statConstant[EStatusStats.Defence])
+            * statMultiple[EStatusStats.Defence] * statDivide[EStatusStats.Defence];
+        _critRate = (0.05f + statConstant[EStatusStats.CritRate])
+            * statMultiple[EStatusStats.CritRate] * statDivide[EStatusStats.CritRate];
+        _critDmg = (1.5f + statConstant[EStatusStats.CritDmg])
+            * statMultiple[EStatusStats.CritDmg] * statDivide[EStatusStats.CritDmg];
+        _movementMultiply = (1f + statConstant[EStatusStats.Movement])
+            * statMultiple[EStatusStats.Movement] * statDivide[EStatusStats.Movement];
+        _attackSpeedMultiply = (1f + statConstant[EStatusStats.AttackSpeed])
+            * statMultiple[EStatusStats.AttackSpeed] * statDivide[EStatusStats.AttackSpeed];
     }
 
     /// <summary>
@@ -260,10 +323,7 @@ public abstract class CUnit : MonoBehaviour
             _status.Add(status);
             if (status.Trigger.HasFlag(EStatusTrigger.OnApply))
             {
-                for (int i = 0; i < status.OnApply.Count; i++)
-                {
-                    status.OnApply[i](this);
-                }
+                ResyncStatus();
             }
             return;
         }
@@ -271,31 +331,18 @@ public abstract class CUnit : MonoBehaviour
         switch (status.StackSwitch)
         {
             case EStatusStack.StackAndRefresh:
-                if (currentStatus.Trigger.HasFlag(EStatusTrigger.OnRemove))
-                {
-                    for (int i = 0; i < status.OnRemove.Count; i++)
-                    {
-                        currentStatus.OnRemove[i](this);
-                    }
-                }
                 currentStatus.Stack += stack;
                 currentStatus.ResetTimer(duration);
-                if (currentStatus.Trigger.HasFlag(EStatusTrigger.OnApply))
+                if (status.Trigger.HasFlag(EStatusTrigger.OnApply))
                 {
-                    for (int i = 0; i < status.OnApply.Count; i++)
-                    {
-                        currentStatus.OnApply[i](this);
-                    }
+                    ResyncStatus();
                 }
                 break;
             case EStatusStack.StackIndividual:
                 _status.Add(status);
                 if (status.Trigger.HasFlag(EStatusTrigger.OnApply))
                 {
-                    for (int i = 0; i < status.OnApply.Count; i++)
-                    {
-                        status.OnApply[i](this);
-                    }
+                    ResyncStatus();
                 }
                 break;
             case EStatusStack.Refresh:

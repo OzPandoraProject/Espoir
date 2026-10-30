@@ -83,29 +83,6 @@ public class CPlayer : CUnit
 
     public void EquipmentResync()
     {
-        if (_equipmentStatus != null && _equipmentStatus.Count > 0)
-        {
-            for (int i = 0; i < _equipmentStatus.Count; i++)
-            {
-                if (!_equipmentStatus[i].Trigger.HasFlag(EStatusTrigger.OnRemove)) continue;
-                for (int j = 0; j < _equipmentStatus[i].OnRemove.Count; j++)
-                {
-                    _equipmentStatus[i].OnRemove[j](this);
-                }
-            }
-        }
-        if (_status != null && _status.Count > 0)
-        {
-            for (int i = 0; i < _status.Count; i++)
-            {
-                if (!_status[i].Trigger.HasFlag(EStatusTrigger.OnRemove)) continue;
-                for (int j = 0; j < _status[i].OnRemove.Count; j++)
-                {
-                    _status[i].OnRemove[j](this);
-                }
-            }
-        }
-
         _equipmentStatus.Clear();
 
         _hpMaxBaseline = _baseHpMax;
@@ -129,7 +106,6 @@ public class CPlayer : CUnit
                     equipmentSet[equipments[i].SetNumber] = 1;
                 }
             }
-            equipments[i].OnEarlySync(this);
         }
 
         List<CSet> sets = new List<CSet>();
@@ -141,18 +117,16 @@ public class CPlayer : CUnit
             }
         }
 
-        for (int i = 0; i < sets.Count; i++)
-        {
-            sets[i].OnEarlySync(this);
-        }
+        List<SStatusOnApply> effects = new List<SStatusOnApply>();
         for (int i = 0; i < equipments.Count; i++)
         {
-            equipments[i].OnLateSync(this);
+            effects.AddRange(equipments[i].OnSync());
         }
         for (int i = 0; i < sets.Count; i++)
         {
-            sets[i].OnLateSync(this);
+            effects.AddRange(sets[i].OnSync());
         }
+
         for (int i = 0; i < equipments.Count; i++)
         {
             equipments[i].OnStatusSync(this);
@@ -161,34 +135,58 @@ public class CPlayer : CUnit
         {
             sets[i].OnStatusSync(this);
         }
+
+        Dictionary<EStatusStats, float> statConstant = new Dictionary<EStatusStats, float>();
+        Dictionary<EStatusStats, float> statMultiple = new Dictionary<EStatusStats, float>();
+        Dictionary<EStatusStats, float> statDivide = new Dictionary<EStatusStats, float>();
+        foreach(EStatusStats stat in Enum.GetValues(typeof(EStatusStats)))
+        {
+            statConstant.Add(stat, 0f);
+            statMultiple.Add(stat, 1f);
+            statDivide.Add(stat, 1f);
+        }
+
+        for(int i = 0; i < effects.Count; i++)
+        {
+            if (effects[i].isConstant)
+            {
+                statConstant[effects[i].target] += effects[i].value;
+            }
+            else
+            {
+                if (effects[i].value < 1f)
+                {
+                    statDivide[effects[i].target] *= effects[i].value;
+                }
+                else
+                {
+                    statMultiple[effects[i].target] += effects[i].value - 1f;
+                }
+            }
+        }
+
+        _hpMaxBaseline = (_baseHpMax + statConstant[EStatusStats.Hp])
+            * statMultiple[EStatusStats.Hp] * statDivide[EStatusStats.Hp];
+        _attackBaseline = (_baseAttack + statConstant[EStatusStats.Attack])
+            * statMultiple[EStatusStats.Attack] * statDivide[EStatusStats.Attack];
+        _defenceBaseline = (_baseDefence + statConstant[EStatusStats.Defence])
+            * statMultiple[EStatusStats.Defence] * statDivide[EStatusStats.Defence];
+        _critRateBaseline = (0.05f + statConstant[EStatusStats.CritRate])
+            * statMultiple[EStatusStats.CritRate] * statDivide[EStatusStats.CritRate];
+        _critDmgBaseline = (1.5f + statConstant[EStatusStats.CritDmg])
+            * statMultiple[EStatusStats.CritDmg] * statDivide[EStatusStats.CritDmg];
+        _movementMultiply = (1f + statConstant[EStatusStats.Movement])
+            * statMultiple[EStatusStats.Movement] * statDivide[EStatusStats.Movement];
+        _attackSpeedMultiply = (1f + statConstant[EStatusStats.AttackSpeed])
+            * statMultiple[EStatusStats.AttackSpeed] * statDivide[EStatusStats.AttackSpeed];
+
         _hpMax = _hpMaxBaseline;
         _attack = _attackBaseline;
         _defence = _defenceBaseline;
         _critRate = _critRateBaseline;
         _critDmg = _critDmgBaseline;
-        if (_equipmentStatus != null && _equipmentStatus.Count > 0)
-        {
-            for (int i = 0; i < _equipmentStatus.Count; i++)
-            {
-                if (!_equipmentStatus[i].Trigger.HasFlag(EStatusTrigger.OnApply)) continue;
-                for (int j = 0; j < _equipmentStatus[i].OnApply.Count; j++)
-                {
-                    _equipmentStatus[i].OnApply[j](this);
-                }
-            }
-        }
 
-        if (_status != null && _status.Count > 0)
-        {
-            for (int i = 0; i < _status.Count; i++)
-            {
-                if (!_status[i].Trigger.HasFlag(EStatusTrigger.OnApply)) continue;
-                for (int j = 0; j < _status[i].OnRemove.Count; j++)
-                {
-                    _status[i].OnApply[j](this);
-                }
-            }
-        }
+        ResyncStatus();
     }
 
     protected override void Awake()

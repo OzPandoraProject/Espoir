@@ -2,11 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EItemRarity
+{
+    [InspectorName("일반")]
+    Normal,
+    [InspectorName("레어")]
+    Rare,
+    [InspectorName("에픽")]
+    Epic,
+    [InspectorName("유니크")]
+    Unique,
+    [InspectorName("특수")]
+    Special,
+}
+
 public abstract class CItem
 {
     protected CItemSO _originItem;
     protected int _id;
     protected string _name;
+    protected EItemRarity _rarity;
     protected Sprite _itemIcon;
     protected string _description;
     protected int _quantity;
@@ -14,6 +29,7 @@ public abstract class CItem
     public CItemSO OriginItem => _originItem;
     public int Id => _id;
     public string Name => _name;
+    public EItemRarity Rarity => _rarity;
     public Sprite ItemIcon => _itemIcon;
     public string Description => _description;
     
