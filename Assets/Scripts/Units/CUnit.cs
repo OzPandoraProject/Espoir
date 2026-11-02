@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.DebugUI;
 
 public struct SDamageInfo
 {
@@ -109,7 +108,7 @@ public abstract class CUnit : MonoBehaviour
 
     protected virtual void Update()
     {
-
+        InvokeOnDelta(Time.deltaTime);
     }
 
     public virtual void ResyncStatus()
@@ -167,6 +166,22 @@ public abstract class CUnit : MonoBehaviour
             * statMultiple[EStatusStats.Movement] * statDivide[EStatusStats.Movement];
         _attackSpeedMultiply = (1f + statConstant[EStatusStats.AttackSpeed])
             * statMultiple[EStatusStats.AttackSpeed] * statDivide[EStatusStats.AttackSpeed];
+    }
+
+    public virtual void InvokeOnDelta(float t)
+    {
+        if (_status == null || _status.Count == 0) return;
+        for (int i = _status.Count - 1; i >= 0; i--)
+        {
+            if (_status[i].Trigger.HasFlag(EStatusTrigger.OnDelta))
+            {
+                for (int j = 0; j < _status[i].OnDelta.Count; j++)
+                {
+                    _status[i].OnDelta[j](this, t);
+                }
+            }
+            _status[i].OnDuration(this, t);
+        }
     }
 
     /// <summary>
@@ -364,21 +379,75 @@ public abstract class CUnit : MonoBehaviour
 
     public int FindStatusStack(int id)
     {
+        if (_status == null || _status.Count == 0) return 0;
+        for (int i = 0; i < _status.Count; i++)
+        {
+            if (_status[i].Id == id) return _status[i].Stack;
+        }
         return 0;
     }
 
     public CStatus FindStatus(int id)
     {
+        if (_status == null || _status.Count == 0) return null;
+
+        for(int i = 0; i < _status.Count; i++)
+        {
+            if (_status[i].Id == id) return _status[i];
+        }
         return null;
     }
 
-    public int RemoveStatus(int id)
+    /// <summary>
+    /// id로 상태이상을 찾아서 삭제합니다. removeAll이 true라면 전부 삭제합니다. 제일 최근의 상태이상을 찾아 삭제합니다.
+    /// 삭제한게 없다면 -1을 반환합니다. 삭제했다면, 그 상태이상의 스택수를 반환합니다.
+    /// 여러개를 삭제했다면 가장 큰 스택수를 반환합니다.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="removeAll"></param>
+    /// <returns></returns>
+    public int RemoveStatus(int id, bool removeAll = true)
     {
-        return 0;
-    }
+        if (_status == null || _status.Count == 0) return -1;
+        int temp = 0;
 
+        for (int i = _status.Count - 1; i >= 0; i--)
+        {
+            if ( _status[i].Id == id)
+            {
+                if (temp < _status[i].Stack) temp = _status[i].Stack;
+                if (_status[i].Trigger.HasFlag(EStatusTrigger.OnRemove))
+                {
+                    for (int j = 0; j < _status[i].OnRemove.Count; j++)
+                    {
+                        _status[i].OnRemove[j](this);
+                    }
+                }
+                _status.Remove(_status[i]);
+                if (!removeAll) return temp;
+            }
+        }
+        return temp;
+    }
+    /// <summary>
+    /// 상태이상을 삭제합니다.
+    /// 삭제한게 없다면 -1을 반환합니다. 삭제했다면, 그 상태이상의 스택수를 반환합니다.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="removeAll"></param>
+    /// <returns></returns>
     public int RemoveStatus(CStatus status)
     {
-        return 0;
+        if (!_status.Contains(status)) return -1;
+        int temp = status.Stack;
+        if (status.Trigger.HasFlag(EStatusTrigger.OnRemove))
+        {
+            for (int i = 0; i < status.OnRemove.Count; i++)
+            {
+                status.OnRemove[i](this);
+            }
+        }
+        _status.Remove(status);
+        return temp;
     }
 }

@@ -189,6 +189,63 @@ public class CPlayer : CUnit
         ResyncStatus();
     }
 
+    public override void ResyncStatus()
+    {
+        List<SStatusOnApply> effects = new List<SStatusOnApply>();
+
+        for (int i = 0; i < _status.Count; i++)
+        {
+            if (_status[i].Trigger.HasFlag(EStatusTrigger.OnApply))
+            {
+                effects.AddRange(_status[i].OnApply);
+            }
+        }
+
+        Dictionary<EStatusStats, float> statConstant = new Dictionary<EStatusStats, float>();
+        Dictionary<EStatusStats, float> statMultiple = new Dictionary<EStatusStats, float>();
+        Dictionary<EStatusStats, float> statDivide = new Dictionary<EStatusStats, float>();
+        foreach (EStatusStats stat in Enum.GetValues(typeof(EStatusStats)))
+        {
+            statConstant.Add(stat, 0f);
+            statMultiple.Add(stat, 1f);
+            statDivide.Add(stat, 1f);
+        }
+
+        for (int i = 0; i < effects.Count; i++)
+        {
+            if (effects[i].isConstant)
+            {
+                statConstant[effects[i].target] += effects[i].value;
+            }
+            else
+            {
+                if (effects[i].value < 1f)
+                {
+                    statDivide[effects[i].target] *= effects[i].value;
+                }
+                else
+                {
+                    statMultiple[effects[i].target] += effects[i].value - 1f;
+                }
+            }
+        }
+
+        _hpMax = (_hpMaxBaseline + statConstant[EStatusStats.Hp])
+            * statMultiple[EStatusStats.Hp] * statDivide[EStatusStats.Hp];
+        _attack = (_attackBaseline + statConstant[EStatusStats.Attack])
+            * statMultiple[EStatusStats.Attack] * statDivide[EStatusStats.Attack];
+        _defence = (_defenceBaseline + statConstant[EStatusStats.Defence])
+            * statMultiple[EStatusStats.Defence] * statDivide[EStatusStats.Defence];
+        _critRate = (_critRateBaseline + statConstant[EStatusStats.CritRate])
+            * statMultiple[EStatusStats.CritRate] * statDivide[EStatusStats.CritRate];
+        _critDmg = (_critDmgBaseline + statConstant[EStatusStats.CritDmg])
+            * statMultiple[EStatusStats.CritDmg] * statDivide[EStatusStats.CritDmg];
+        _movementMultiply = (_movementMultiply + statConstant[EStatusStats.Movement])
+            * statMultiple[EStatusStats.Movement] * statDivide[EStatusStats.Movement];
+        _attackSpeedMultiply = (_attackSpeedMultiply + statConstant[EStatusStats.AttackSpeed])
+            * statMultiple[EStatusStats.AttackSpeed] * statDivide[EStatusStats.AttackSpeed];
+    }
+
     protected override void Awake()
     {
         base.Awake();
@@ -272,8 +329,9 @@ public class CPlayer : CUnit
         }
     }
 
-    private void Update()
+    protected override void Update()
     {
+        base.Update();
         _movement.ApplyGravity();
 
         if (HpCurrent <= 0f)

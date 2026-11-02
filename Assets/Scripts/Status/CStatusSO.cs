@@ -27,21 +27,22 @@ public class CStatusSO : ScriptableObject
     [SerializeField] private float _stackDuration;
     [Tooltip("상태이상 효과")]
     [SerializeField] private List<SStatusAction> _actionList;
+    [Tooltip("커스텀 상태이상 (0이면 없음)")]
+    [SerializeField] private int _customStatus = 0;
 
     #region Member Property
     public int Id => _id;
     public string Name => _name;
     public string Description => _description;
     public string Tooltip => _tooltip;
+    public Sprite Icon => _icon;
     public float Duration => _duration;
     public EStatusStack Stack => _stack;
     public EStatusRemove Remove => _remove;
     public float StackDuration => _stackDuration;
     public IReadOnlyList<SStatusAction> ActionList => _actionList;
+    public int CustomStatus => _customStatus;
     #endregion
-
-
-
 
     private static Dictionary<int, CStatusSO> _idToStatus = new Dictionary<int, CStatusSO>();
     private static Dictionary<string, CStatusSO> _stringToStatus = new Dictionary<string, CStatusSO>();
