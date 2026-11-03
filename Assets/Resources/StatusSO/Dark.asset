@@ -15,12 +15,14 @@ MonoBehaviour:
   _id: 1
   _name: "\uC554\uD751"
   _icon: {fileID: 0}
-  _description: "\uBC1B\uB294\uB300\uBBF8\uC9C0 10%\uC99D\uAC00\uD55C\uB2E4."
+  _description: "\uBC1B\uB294\uB300\uBBF8\uC9C0 15%\uC99D\uAC00\uD55C\uB2E4."
   _tooltip: 
   _duration: 0
   _stack: 0
+  _maxStack: 0
   _remove: 0
   _stackDuration: 0
   _actionList:
   - action: 8
-    param: 1.1
+    param: 1.15
+  _customStatus: 0

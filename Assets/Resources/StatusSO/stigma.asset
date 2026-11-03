@@ -22,8 +22,10 @@ MonoBehaviour:
   _tooltip: 
   _duration: 6
   _stack: 0
+  _maxStack: 5
   _remove: 1
   _stackDuration: 6
   _actionList:
   - action: 3
     param: 0.95
+  _customStatus: 0

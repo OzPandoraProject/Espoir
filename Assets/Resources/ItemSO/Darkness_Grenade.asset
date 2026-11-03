@@ -14,9 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 404
   _name: "\uC554\uD751 \uC218\uB958\uD0C4"
+  _rarity: 0
   _itemIcon: {fileID: 0}
   _description: "\uB358\uC838\uC11C \uC801\uC774 \uBC1B\uB294 \uD53C\uD574\uB97C
-    10% \uC99D\uAC00\uC2DC\uD0A8\uB2E4."
+    15% \uC99D\uAC00\uC2DC\uD0A8\uB2E4."
+  _cost: 0
   _action: []
   _itemStatus:
   - statusId: 1
