@@ -24,8 +24,12 @@ public class CPlayerSkill : MonoBehaviour
     private static readonly int _IDLE_HASH = Animator.StringToHash("Idle");
     private readonly Dictionary<CSkillSO, CSkillRuntime> _SKILLS = new Dictionary<CSkillSO, CSkillRuntime>();
     private readonly List<ParticleSystem> _EFFECT_PARTICLES = new List<ParticleSystem>();
+    private readonly List<GameObject> _CAST_EFFECTS = new List<GameObject>();
+    private readonly List<ParticleSystem> _PAUSED_PARTICLES = new List<ParticleSystem>();
+    private readonly CPlayerDashTrail _DASH_TRAIL = new CPlayerDashTrail();
+    private readonly CPlayerSpellCast _SPELL = new CPlayerSpellCast();
 
-    private CUnit _owner;
+    private CPlayer _owner;
     private CPlayerMovement _movement;
     private CSkillRuntime _currentSkill;
     private int _stepIndex = -1;
@@ -35,10 +39,12 @@ public class CPlayerSkill : MonoBehaviour
     private Vector3 _direction;
     private Vector3 _queuedDirection;
     private float _moveProgress;
-    private float _dashTimeRemaining;
+    private float _dashElapsed;
+    private float _dashDistance;
     private bool _hasSpawnedEffect;
     private float _hitStopRemaining;
     private float _animatorSpeed;
+    private float _baseAttackSpeed;
 
     public bool IsBusy => _currentSkill != null;
 
@@ -51,7 +57,7 @@ public class CPlayerSkill : MonoBehaviour
     /// 사용 주체와 기본 스킬 연결을 확인합니다.
     /// </summary>
 
-    public bool Initialize(CUnit owner)
+    public bool Initialize(CPlayer owner)
     {
         _owner = owner;
         _movement = GetComponent<CPlayerMovement>();
@@ -159,12 +165,32 @@ public class CPlayerSkill : MonoBehaviour
             GetStateIndex(runtime.recoverStateHashes, state.shortNameHash) >= 0 &&
             state.normalizedTime * state.length <= skill.ComboGraceTime;
 
-        FinishSkill();
+        if (!_owner.TrySpendMp(skill.MpCost))
+        {
+            return false;
+        }
+
+        FinishSkill(isCanceling);
         _currentSkill = runtime;
         _stateCheckFrame = Time.frameCount + 1;
         runtime.readyTime = Time.time + skill.Cooldown;
         _direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : transform.forward;
-        _dashTimeRemaining = skill.DashDuration;
+
+        if (skill.Type == ESkillType.Dash)
+        {
+            _DASH_TRAIL.Begin(skill.DashTrail, transform, _animator, _direction, _CAST_EFFECTS);
+        }
+
+        if (skill.Type == ESkillType.Rush || skill.Type == ESkillType.Slam)
+        {
+            _SPELL.Begin(_owner, _direction, skill, _CAST_EFFECTS);
+            _DASH_TRAIL.Reset(transform.position, skill.DashTrail.firstDistance);
+        }
+
+        if (skill == _basicAttack)
+        {
+            _baseAttackSpeed = _animator.speed;
+        }
 
         if (isCanceling)
         {
@@ -217,7 +243,7 @@ public class CPlayerSkill : MonoBehaviour
                 return;
             }
 
-            _animator.speed = _animatorSpeed;
+            EndHitStop();
         }
 
         if (_currentSkill.data.Type == ESkillType.Dash)
@@ -238,7 +264,7 @@ public class CPlayerSkill : MonoBehaviour
     public void CancelSkill()
     {
         bool wasBusy = IsBusy;
-        FinishSkill();
+        FinishSkill(true);
 
         if (wasBusy && _animator != null && _animator.isActiveAndEnabled)
         {
@@ -270,6 +296,11 @@ public class CPlayerSkill : MonoBehaviour
 
     private void UpdateAttack()
     {
+        if (_currentSkill.data == _basicAttack)
+        {
+            _animator.speed = _baseAttackSpeed * Mathf.Max(0f, _owner.AttackSpeedMultiplier);
+        }
+
         AnimatorStateInfo state = _animator.GetCurrentAnimatorStateInfo(0);
         int index = GetStateIndex(_currentSkill.stateHashes, state.shortNameHash);
 
@@ -293,6 +324,25 @@ public class CPlayerSkill : MonoBehaviour
             EnterStep(index);
         }
 
+        CSkillSO skill = _currentSkill.data;
+        if (skill.Type == ESkillType.Rush)
+        {
+            if (_SPELL.UpdateRush(_owner, _playerAttack, _movement, skill, state.normalizedTime))
+            {
+                _currentSkill.readyTime -= skill.MarkedCooldownReduction;
+            }
+
+            _DASH_TRAIL.UpdateRush(skill.DashTrail, transform, _animator, _direction,
+                state.normalizedTime, _CAST_EFFECTS);
+            return;
+        }
+
+        if (skill.Type == ESkillType.Slam)
+        {
+            _SPELL.UpdateSlam(_owner, _playerAttack, skill, state.normalizedTime);
+            return;
+        }
+
         _movement.Rotate(_direction, _currentSkill.data.RotationSpeed);
         SSkillStep step = _currentSkill.data.Steps[index];
         float progress = Mathf.InverseLerp(step.moveStart, step.moveEnd, state.normalizedTime);
@@ -306,7 +356,24 @@ public class CPlayerSkill : MonoBehaviour
             SSkillHit hit = step.hits[_nextHitIndex];
             _nextHitIndex++;
 
-            if (_playerAttack.Attack(_owner, hit) && hit.hitStopDuration > 0f)
+            bool isBasicAttack = _currentSkill.data == _basicAttack;
+            bool isFinisher = isBasicAttack && index == _basicAttack.Steps.Length - 1 &&
+                _nextHitIndex == step.hits.Length;
+            SPlayerHitResult result = _playerAttack.Attack(_owner, hit, isFinisher);
+
+            if (!result.hasHit)
+            {
+                continue;
+            }
+
+            if (isBasicAttack)
+            {
+                _owner.RecoverBasicAttackMp();
+            }
+
+            _owner.Passive.GainFlow(_owner, _owner.Passive.FlowPerHit(result.hitFullyMarkedTarget));
+
+            if (hit.hitStopDuration > 0f)
             {
                 HitStop(hit.hitStopDuration);
                 break;
@@ -317,10 +384,18 @@ public class CPlayerSkill : MonoBehaviour
     private void UpdateDash()
     {
         CSkillSO skill = _currentSkill.data;
-        float moveTime = Mathf.Min(Time.deltaTime, _dashTimeRemaining);
-        float speed = skill.Steps[0].moveDistance / skill.DashDuration;
-        _movement.MoveOnGround(_direction * (speed * moveTime));
-        _dashTimeRemaining = Mathf.Max(_dashTimeRemaining - moveTime, 0f);
+        float endTime = skill.DashStartDelay + skill.DashDuration;
+
+        if (_dashElapsed < endTime)
+        {
+            _dashElapsed = Mathf.Min(_dashElapsed + Time.deltaTime, endTime);
+            float progress = _dashElapsed >= endTime ? 1f :
+                Mathf.Clamp01((_dashElapsed - skill.DashStartDelay) / skill.DashDuration);
+            float distance = skill.Steps[0].moveDistance * (1f - Mathf.Pow(1f - progress, skill.DashEasePower));
+            _movement.MoveOnGround(_direction * (distance - _dashDistance));
+            _dashDistance = distance;
+            _DASH_TRAIL.Update(skill.DashTrail, transform, _animator, _direction, progress, _CAST_EFFECTS);
+        }
 
         AnimatorStateInfo state = _animator.GetCurrentAnimatorStateInfo(0);
 
@@ -334,7 +409,7 @@ public class CPlayerSkill : MonoBehaviour
             UpdateEffect(skill.Steps[0], state);
         }
 
-        else if (_stepIndex >= 0 && !_animator.IsInTransition(0) && _dashTimeRemaining <= 0f)
+        else if (_stepIndex >= 0 && !_animator.IsInTransition(0) && _dashElapsed >= endTime)
         {
             FinishSkill();
         }
@@ -364,12 +439,18 @@ public class CPlayerSkill : MonoBehaviour
         _hasSpawnedEffect = true;
         float elapsed = (state.normalizedTime - step.effectTime) * state.length;
 
-        if (elapsed >= step.effectLifetime)
+        if (step.effectLifetime > 0f && elapsed >= step.effectLifetime)
         {
             return;
         }
 
         GameObject effect = Instantiate(step.effectPrefab, transform.position, transform.rotation);
+        _CAST_EFFECTS.Add(effect);
+
+        if (step.effectLifetime <= 0f)
+        {
+            return;
+        }
 
         if (elapsed > 0f)
         {
@@ -387,16 +468,35 @@ public class CPlayerSkill : MonoBehaviour
         Destroy(effect, step.effectLifetime - elapsed);
     }
 
-    private void FinishSkill()
+    private void FinishSkill(bool canceled = false)
     {
         if (_hitStopRemaining > 0f)
         {
-            _animator.speed = _animatorSpeed;
-            _hitStopRemaining = 0f;
+            EndHitStop();
         }
+
+        if (canceled)
+        {
+            foreach (GameObject effect in _CAST_EFFECTS)
+            {
+                if (effect != null)
+                {
+                    effect.SetActive(false);
+                    Destroy(effect);
+                }
+            }
+        }
+
+        _CAST_EFFECTS.Clear();
+        _SPELL.End();
 
         if (_currentSkill != null)
         {
+            if (_currentSkill.data == _basicAttack)
+            {
+                _animator.speed = _baseAttackSpeed;
+            }
+
             _animator.ResetTrigger(_currentSkill.startTriggerHash);
 
             if (_currentSkill.comboTriggerHash != 0)
@@ -412,7 +512,8 @@ public class CPlayerSkill : MonoBehaviour
         _nextHitIndex = 0;
         _hasQueuedCombo = false;
         _moveProgress = 0f;
-        _dashTimeRemaining = 0f;
+        _dashElapsed = 0f;
+        _dashDistance = 0f;
 
         if (_movement != null)
         {
@@ -425,6 +526,42 @@ public class CPlayerSkill : MonoBehaviour
         _hitStopRemaining = duration;
         _animatorSpeed = _animator.speed;
         _animator.speed = 0f;
+
+        foreach (GameObject effect in _CAST_EFFECTS)
+        {
+            if (effect == null)
+            {
+                continue;
+            }
+
+            effect.GetComponentsInChildren(false, _EFFECT_PARTICLES);
+            foreach (ParticleSystem particle in _EFFECT_PARTICLES)
+            {
+                if (particle.isPlaying && !particle.main.useUnscaledTime)
+                {
+                    particle.Pause(false);
+                    _PAUSED_PARTICLES.Add(particle);
+                }
+            }
+        }
+
+        _EFFECT_PARTICLES.Clear();
+    }
+
+    private void EndHitStop()
+    {
+        _hitStopRemaining = 0f;
+        _animator.speed = _animatorSpeed;
+
+        foreach (ParticleSystem particle in _PAUSED_PARTICLES)
+        {
+            if (particle != null)
+            {
+                particle.Play(false);
+            }
+        }
+
+        _PAUSED_PARTICLES.Clear();
     }
 
     private int GetStateIndex(int[] hashes, int hash)
@@ -453,6 +590,17 @@ public class CPlayerSkill : MonoBehaviour
             return false;
         }
 
+        if (skill.Type == ESkillType.Rush && (skill.Steps.Length != 1 || skill.Steps[0].hits?.Length != 1 ||
+            skill.MovementCurve == null || skill.MovementCurve.length == 0))
+        {
+            return false;
+        }
+
+        if (skill.Type == ESkillType.Slam && skill.Steps.Length != 1)
+        {
+            return false;
+        }
+
         if (skill.Steps.Length > 1 && !HasTrigger(skill.ComboTrigger))
         {
             return false;
@@ -473,7 +621,14 @@ public class CPlayerSkill : MonoBehaviour
             }
 
             if (step.effectPrefab != null &&
-                (step.effectTime < 0f || step.effectTime > 1f || step.effectLifetime <= 0f))
+                (step.effectTime < 0f || step.effectTime > 1f || step.effectLifetime < 0f))
+            {
+                return false;
+            }
+
+            if (step.effectPrefab != null && step.effectLifetime == 0f &&
+                (!step.effectPrefab.TryGetComponent(out ParticleSystem particles) ||
+                    particles.main.stopAction != ParticleSystemStopAction.Destroy))
             {
                 return false;
             }

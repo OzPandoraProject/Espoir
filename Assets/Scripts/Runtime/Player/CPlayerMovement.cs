@@ -71,14 +71,15 @@ public class CPlayerMovement : MonoBehaviour
     /// 목적지로 이동하며 실제 이동 방향으로 회전합니다.
     /// </summary>
 
-    public void Move()
+    public void Move(float speedMultiplier)
     {
         Vector3 previousPosition = transform.position;
 
         Vector3 targetDirection = _targetPosition - previousPosition;
         targetDirection.y = 0f;
 
-        MoveOnGround(Vector3.ClampMagnitude(targetDirection, _moveSpeed * Time.deltaTime));
+        float distance = _moveSpeed * Mathf.Max(0f, speedMultiplier) * Time.deltaTime;
+        MoveOnGround(Vector3.ClampMagnitude(targetDirection, distance));
 
         Vector3 moveDirection = transform.position - previousPosition;
         moveDirection.y = 0f;

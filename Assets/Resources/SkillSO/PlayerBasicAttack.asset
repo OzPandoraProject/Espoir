@@ -31,9 +31,9 @@ MonoBehaviour:
       hitStopDuration: 0.045
       offset: {x: 0, y: 0, z: 1}
       size: {x: 2, y: 2, z: 2}
-    effectPrefab: {fileID: 8820949338032132556, guid: 9f9d2b0c9295a394ea587f4a7a0a0f84, type: 3}
+    effectPrefab: {fileID: 4039472349363806554, guid: 63f5cc66f82532947bca712032a5cd90, type: 3}
     effectTime: 0.5053846
-    effectLifetime: 0.6
+    effectLifetime: 0
   - stateName: Attack2
     recoverStateName: Attack2Recover
     moveDistance: 0.3
@@ -41,13 +41,13 @@ MonoBehaviour:
     moveEnd: 0.6
     hits:
     - time: 0.45
-      damageRatio: 1
+      damageRatio: 1.2
       hitStopDuration: 0.065
       offset: {x: 0, y: 0, z: 1}
       size: {x: 2, y: 2, z: 2}
-    effectPrefab: {fileID: 828870092271869250, guid: 962d4a227e93a214b8ea2a07493dcd4a, type: 3}
+    effectPrefab: {fileID: 1773616061408557925, guid: 85e4e8ea050f9ac46a4613c3f45f3ea7, type: 3}
     effectTime: 0.45
-    effectLifetime: 0.6
+    effectLifetime: 0
   - stateName: Attack3
     recoverStateName: 
     moveDistance: 0.45
@@ -55,20 +55,20 @@ MonoBehaviour:
     moveEnd: 0.7
     hits:
     - time: 0.3
-      damageRatio: 1
+      damageRatio: 1.2
       hitStopDuration: 0.035
       offset: {x: 0, y: 0, z: 1}
       size: {x: 2, y: 2, z: 2}
     - time: 0.33
-      damageRatio: 1
+      damageRatio: 1.2
       hitStopDuration: 0.05
       offset: {x: 0, y: 0, z: 1}
       size: {x: 2, y: 2, z: 2}
     - time: 0.36
-      damageRatio: 1
+      damageRatio: 1.2
       hitStopDuration: 0.12
       offset: {x: 0, y: 0, z: 1}
       size: {x: 2, y: 2, z: 2}
-    effectPrefab: {fileID: 3912727732374683152, guid: 669647336b5726e43ae0ac6875ea58c1, type: 3}
+    effectPrefab: {fileID: 8619025698767317206, guid: 80680541213477342986f61ba7dd3c88, type: 3}
     effectTime: 0.318
-    effectLifetime: 0.6
+    effectLifetime: 0

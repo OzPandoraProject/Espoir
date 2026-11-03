@@ -19,6 +19,22 @@ MonoBehaviour:
   _rotationSpeed: 1080
   _comboGraceTime: 0.8
   _dashDuration: 0.25
+  _dashStartDelay: 0.04
+  _dashEasePower: 2.2
+  _dashTrail:
+    startShock: {fileID: 1763696305613436543, guid: dd810ff275155c14e97440090f8e14df, type: 3}
+    endShock: {fileID: 3287305276043393269, guid: e91740dee565bc745be1bc776ed66c2c, type: 3}
+    startHeight: -0.55
+    endHeight: -0.6
+    ghostMaterial: {fileID: 2100000, guid: 3ed37ac9d0d8fc84cbe8df3af00c8e8b, type: 2}
+    firstDistance: 1.3
+    spacing: 1.5
+    lateProgress: 0.55
+    earlyLifetimeStep: 0.07
+    alphaStep: 0.04
+    departure: {lifetime: 0.3, alpha: 0.75, smear: 0, hold: 0.3}
+    early: {lifetime: 0.32, alpha: 0.7, smear: 0.06, hold: 0.4}
+    late: {lifetime: 0.18, alpha: 0.7, smear: 0.06, hold: 0.25}
   _steps:
   - stateName: Dash
     recoverStateName: 

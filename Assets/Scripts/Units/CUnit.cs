@@ -11,31 +11,39 @@ public struct SDamageInfo
     public ERatioSwitch ratioSwitch;
     public bool enableCritical;
     public List<CStatusSO> stateOnHit;
+    public float armorPenetration;
+    public bool forceCritical;
 
-    public SDamageInfo(float damage, bool isFixed, ERatioSwitch ratioSwitch, bool enableCritical, List<CStatusSO> stateOnHit)
+    public SDamageInfo(float damage, bool isFixed, ERatioSwitch ratioSwitch, bool enableCritical, List<CStatusSO> stateOnHit
+        ,float armorPenetration = 0f, bool forceCritical = false)
     {
         this.damage = damage;
         this.isFixed = isFixed;
         this.ratioSwitch = ratioSwitch;
         this.enableCritical = enableCritical;
         this.stateOnHit = stateOnHit;
+        this.armorPenetration = armorPenetration;
+        this.forceCritical = forceCritical;
     }
 
-    public SDamageInfo (float damage, bool isFixed, bool enableCritical, List<CStatusSO> stateOnHit)
+    public SDamageInfo (float damage, bool isFixed, bool enableCritical, List<CStatusSO> stateOnHit
+        ,float armorPenetration = 0f, bool forceCritical = false)
     {
         this.damage = damage;
         this.isFixed = isFixed;
         this.ratioSwitch = ERatioSwitch.Constant;
         this.enableCritical = enableCritical;
         this.stateOnHit = stateOnHit;
+        this.armorPenetration = armorPenetration;
+        this.forceCritical = forceCritical;
     }
 
     public SDamageInfo(float damage, ERatioSwitch ratioSwitch = ERatioSwitch.Constant)
-        : this(damage, false, ratioSwitch, true, null) { }
+        : this(damage, false, ratioSwitch, true, null, 0f, false) { }
     public SDamageInfo(float damage, bool isFixed, ERatioSwitch ratioSwitch = ERatioSwitch.Constant)
-        : this(damage, isFixed, ratioSwitch, true, null) { }
+        : this(damage, isFixed, ratioSwitch, true, null, 0f, false) { }
     public SDamageInfo(float damage, bool isFixed, List<CStatusSO> stateOnHit)
-    : this(damage, isFixed, true, stateOnHit) { }
+    : this(damage, isFixed, true, stateOnHit, 0f, false) { }
 }
 
 public enum ERatioSwitch
@@ -119,7 +127,17 @@ public abstract class CUnit : MonoBehaviour
         {
             if (_status[i].Trigger.HasFlag(EStatusTrigger.OnApply))
             {
-                effects.AddRange(_status[i].OnApply);
+                for (int j = 0; j < _status[i].OnApply.Count; j++)
+                {
+                    SStatusOnApply targetEffect = _status[i].OnApply[j];
+                    if (targetEffect.applyStack)
+                    {
+                        if (targetEffect.isConstant) targetEffect.value *= _status[i].Stack;
+                        else targetEffect.value = 1f + ((targetEffect.value - 1f) * _status[i].Stack);
+                        targetEffect.applyStack = false;
+                    }
+                    effects.Add(targetEffect);
+                }
             }
         }
 
@@ -253,16 +271,24 @@ public abstract class CUnit : MonoBehaviour
     {
         isCritical = false;
         float finalDamage = DamageRatioCaculate(attacker, defender, damage);
-        if (damage.enableCritical)
+        if (damage.forceCritical)
         {
-            finalDamage = DamageCriticalCalculate(attacker, finalDamage, out isCritical);
+            finalDamage = finalDamage * attacker._critDmg;
+            isCritical = true;
+        }
+        else
+        {
+            if (damage.enableCritical)
+            {
+                finalDamage = DamageCriticalCalculate(attacker, finalDamage, out isCritical);
+            }
         }
         if (damage.isFixed)
         {   
             return damage.damage;
         }
 
-        finalDamage = finalDamage * (100f / (100f + Mathf.Max(defender.Defence, -99.9f)));
+        finalDamage = finalDamage * (100f / (100f + Mathf.Max((defender.Defence * (1 - damage.armorPenetration)), -99.9f)));
 
         List<CStatus> attackerStatus = new List<CStatus>();
         List<CStatus> defenderStatus = new List<CStatus>();
@@ -284,7 +310,7 @@ public abstract class CUnit : MonoBehaviour
             {
                 for (int j = 0; j < attackerStatus[i].OnAttack.Count; j++)
                 {
-                    finalDamage = attackerStatus[i].OnAttack[j](attacker, defender, finalDamage);
+                    finalDamage = attackerStatus[i].OnAttack[j](attacker, defender, finalDamage, isCritical);
                 }
             }
         }
@@ -294,17 +320,7 @@ public abstract class CUnit : MonoBehaviour
             {
                 for (int j = 0; j < defenderStatus[i].OnDefence.Count; j++)
                 {
-                    finalDamage = defenderStatus[i].OnDefence[j](attacker, defender, finalDamage);
-                }
-            }
-        }
-        for (int i = 0; i < attackerStatus.Count; i++)
-        {
-            if (attackerStatus[i].Trigger.HasFlag(EStatusTrigger.OnHit))
-            {
-                for (int j = 0; j < attackerStatus[i].OnHit.Count; j++)
-                {
-                    attackerStatus[i].OnHit[j](attacker, defender, finalDamage);
+                    finalDamage = defenderStatus[i].OnDefence[j](attacker, defender, finalDamage, isCritical);
                 }
             }
         }
@@ -314,7 +330,17 @@ public abstract class CUnit : MonoBehaviour
             {
                 for (int j = 0; j < defenderStatus[i].OnDamage.Count; j++)
                 {
-                    defenderStatus[i].OnDamage[j](attacker, defender, finalDamage);
+                    finalDamage = defenderStatus[i].OnDamage[j](attacker, defender, finalDamage);
+                }
+            }
+        }
+        for (int i = 0; i < attackerStatus.Count; i++)
+        {
+            if (attackerStatus[i].Trigger.HasFlag(EStatusTrigger.OnHit))
+            {
+                for (int j = 0; j < attackerStatus[i].OnHit.Count; j++)
+                {
+                    finalDamage = attackerStatus[i].OnHit[j](attacker, defender, finalDamage);
                 }
             }
         }
@@ -452,6 +478,7 @@ public abstract class CUnit : MonoBehaviour
                     currentStatus.Stack = currentStatus.MaxStack;
                 }
                 currentStatus.ResetTimer(duration);
+                currentStatus.IsStackRemoving = false;
                 if (status.Trigger.HasFlag(EStatusTrigger.OnApply))
                 {
                     ResyncStatus();
@@ -466,6 +493,7 @@ public abstract class CUnit : MonoBehaviour
                 break;
             case EStatusStack.Refresh:
                 currentStatus.ResetTimer(duration);
+                currentStatus.IsStackRemoving = false;
                 break;
             case EStatusStack.Ignore:
                 break;

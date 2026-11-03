@@ -25,6 +25,10 @@ public class CStatusSO : ScriptableObject
     [SerializeField] private int _maxStack;
     [Tooltip("스택 제거 방식")]
     [SerializeField] private EStatusRemove _remove;
+    [Tooltip("최초 스택 감소수")]
+    [SerializeField] private int _initialRemoveStack;
+    [Tooltip("스택 감소수")]
+    [SerializeField] private int _removeStack;
     [Tooltip("스택 제거 타이머")]
     [SerializeField] private float _stackDuration;
     [Tooltip("상태이상 효과")]
@@ -41,6 +45,8 @@ public class CStatusSO : ScriptableObject
     public float Duration => _duration;
     public EStatusStack Stack => _stack;
     public int MaxStack => _maxStack;
+    public int InitialRemoveStack => _initialRemoveStack;
+    public int RemoveStack => _removeStack;
     public EStatusRemove Remove => _remove;
     public float StackDuration => _stackDuration;
     public IReadOnlyList<SStatusAction> ActionList => _actionList;

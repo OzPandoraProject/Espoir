@@ -1,5 +1,19 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using UnityEngine;
+
+public struct SPlayerHitResult
+{
+    public bool hasHit;
+    public bool hitFullyMarkedTarget;
+}
+
+internal enum EHitMark
+{
+    None,
+    Add,
+    Fill,
+    Refresh
+}
 
 public class CPlayerAttack : MonoBehaviour
 {
@@ -7,7 +21,6 @@ public class CPlayerAttack : MonoBehaviour
     [SerializeField] private LayerMask _targetLayer;
     [SerializeField] private CSkillSO _previewSkill;
 
-    private CSoundManager _soundManager;
     private const int _INITIAL_HIT_CAPACITY = 5;
 
     private Collider[] _hitColliders = new Collider[_INITIAL_HIT_CAPACITY];
@@ -20,24 +33,30 @@ public class CPlayerAttack : MonoBehaviour
         {
             CLogger.Warn($"{name}: 공격 대상 레이어가 설정되지 않았습니다.");
         }
-        _soundManager = FindFirstObjectByType<CSoundManager>();
-        
-        if (_soundManager == null)
-        {
-            CLogger.Warn($"사운드매니저 찾기 실패");
-        }
     }
 
     /// <summary>
-    /// 공격 범위에 피해를 전달하고 체력이 감소한 대상이 있는지 반환합니다.
+    /// 범위 내 대상에게 피해를 주고 적중 여부와 타격 전 낙인 상태를 반환합니다.
     /// </summary>
 
-    public bool Attack(CUnit attacker, SSkillHit hit)
+    public SPlayerHitResult Attack(CPlayer attacker, SSkillHit hit, bool appliesMark)
     {
-        _HIT_TARGETS.Clear();
+        return Attack(attacker, hit, transform.position, transform.rotation,
+            appliesMark ? EHitMark.Add : EHitMark.None);
+    }
 
-        int hitCount = FindTargets(hit.offset, hit.size);
-        bool hasHit = false;
+    internal SPlayerHitResult Attack(CPlayer attacker, SSkillHit hit, Vector3 position, Quaternion rotation,
+        EHitMark mark, HashSet<CUnit> castTargets = null)
+    {
+        HashSet<CUnit> targets = castTargets;
+        if (targets == null)
+        {
+            _HIT_TARGETS.Clear();
+            targets = _HIT_TARGETS;
+        }
+
+        int hitCount = FindTargets(position + rotation * hit.offset, hit.size, rotation);
+        SPlayerHitResult result = new SPlayerHitResult();
 
         for (int i = 0; i < hitCount; i++)
         {
@@ -53,38 +72,51 @@ public class CPlayerAttack : MonoBehaviour
                 continue;
             }
 
-            if (!_HIT_TARGETS.Add(target))
+            if (!targets.Add(target))
             {
                 continue;
             }
 
+            if (mark == EHitMark.Fill)
+            {
+                attacker.Passive.ApplyFullMark(target);
+            }
+
+            bool hadFullMark = attacker.Passive.HasFullMark(target);
             SDamageInfo damageInfo = new SDamageInfo(attacker.Attack * hit.damageRatio);
             float previousHp = target.HpCurrent;
             target.OnHit(attacker, target, damageInfo);
-            if (_soundManager != null)
+            if (target.HpCurrent < previousHp)
             {
-                _soundManager.PlaySE(EEffectSound.MonsterHit);
+                result.hasHit = true;
+                result.hitFullyMarkedTarget |= hadFullMark;
+
+                if (mark == EHitMark.Add && target.HpCurrent > 0f)
+                {
+                    attacker.Passive.ApplyMark(target);
+                }
+
+                else if (mark == EHitMark.Refresh && target.HpCurrent > 0f)
+                {
+                    attacker.Passive.RefreshMark(target);
+                }
             }
-            hasHit |= target.HpCurrent < previousHp;
 
             CLogger.Log($"{target.name} 현재 체력: {target.HpCurrent}");
         }
 
-        return hasHit;
+        return result;
     }
 
-    private int FindTargets(Vector3 offset, Vector3 size)
+    private int FindTargets(Vector3 attackCenter, Vector3 size, Quaternion rotation)
     {
-        Vector3 attackCenter =
-            transform.position + transform.rotation * offset;
-
         while (true)
         {
             int hitCount = Physics.OverlapBoxNonAlloc(
                 attackCenter,
                 size * 0.5f,
                 _hitColliders,
-                transform.rotation,
+                rotation,
                 _targetLayer,
                 QueryTriggerInteraction.Ignore
             );

@@ -1,0 +1,245 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42141cf8eb324aad8935776fa0250525, type: 3}
+  m_Name: PlayerSkillE
+  m_EditorClassIdentifier:
+  _type: 2
+  _cooldown: 8
+  _mpCost: 20
+  _startTrigger: SkillE
+  _comboTrigger:
+  _rotationSpeed: 1080
+  _comboGraceTime: 0.8
+  _dashTrail:
+    ghostMaterial: {fileID: 2100000, guid: 3ed37ac9d0d8fc84cbe8df3af00c8e8b, type: 2}
+    firstDistance: 1.5
+    spacing: 1.1
+    ghostWindow: {x: 0.20264904, y: 0.46215159}
+    minAlpha: 0.35
+    lateProgress: 1
+    earlyLifetimeStep: 0.05
+    alphaStep: 0.04
+    departure: {lifetime: 0.3, alpha: 0.75, smear: 0, hold: 0.25}
+    early: {lifetime: 0.3, alpha: 0.72, smear: 0.06, hold: 0.4}
+    late: {lifetime: 0.3, alpha: 0.72, smear: 0.06, hold: 0.4}
+  _movementCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.18735478
+      value: 0
+      inSlope: 0
+      outSlope: 4.4330335
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.21259032
+      value: 0.22380234
+      inSlope: 8.6708491
+      outSlope: 11.272104
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.2127864
+      value: 0.226
+      inSlope: 11.14339
+      outSlope: 11.14339
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.23239444
+      value: 0.437
+      inSlope: 9.9958999
+      outSlope: 9.9958999
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.25200247
+      value: 0.618
+      inSlope: 8.0834208
+      outSlope: 8.0834208
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.26670849
+      value: 0.7252031
+      inSlope: 6.2952498
+      outSlope: 0
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.32023843
+      value: 0.7252031
+      inSlope: 0
+      outSlope: 6.2952498
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.32514044
+      value: 0.754
+      inSlope: 5.4314471
+      outSlope: 5.4314471
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.34474848
+      value: 0.831
+      inSlope: 2.957971
+      outSlope: 2.957971
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.36435651
+      value: 0.87
+      inSlope: 1.8104835
+      outSlope: 1.8104835
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.37612133
+      value: 0.889896
+      inSlope: 1.5901635
+      outSlope: 1.9571244
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.38249395
+      value: 0.902
+      inSlope: 1.8516748
+      outSlope: 1.8516748
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.39842547
+      value: 0.929
+      inSlope: 1.5064462
+      outSlope: 1.5064462
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.414357
+      value: 0.95
+      inSlope: 1.192603
+      outSlope: 1.192603
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.43028854
+      value: 0.967
+      inSlope: 0.91014437
+      outSlope: 0.91014437
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.44622005
+      value: 0.979
+      inSlope: 0.65906959
+      outSlope: 0.65906959
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.46215159
+      value: 0.988
+      inSlope: 0.47076598
+      outSlope: 0.47076598
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.4780831
+      value: 0.994
+      inSlope: 0.282459
+      outSlope: 0.282459
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.49401466
+      value: 0.997
+      inSlope: 0.15692137
+      outSlope: 0.15692137
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.50994617
+      value: 0.999
+      inSlope: 0.094153614
+      outSlope: 0.094153614
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.52587771
+      value: 1
+      inSlope: 0.062767758
+      outSlope: 0
+      tangentMode: 1
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  _followEffect: {fileID: 8552703965079589485, guid: 8fc7828602fbfb54ba92854d6cc89b22, type: 3}
+  _markedCooldownReduction: 3
+  _steps:
+  - stateName: SkillE
+    recoverStateName:
+    moveDistance: 11
+    moveStart: 0.18735478
+    moveEnd: 0.52587771
+    hits:
+    - time: 0.18735478
+      damageRatio: 1.8
+      hitStopDuration: 0
+      offset: {x: 0, y: 0, z: 0.55}
+      size: {x: 2.6, y: 2.5, z: 2.5}
+    effectPrefab: {fileID: 1467711750087583531, guid: 5e19c82fc973dff47b4fa21500032943, type: 3}
+    effectTime: 0
+    effectLifetime: 0

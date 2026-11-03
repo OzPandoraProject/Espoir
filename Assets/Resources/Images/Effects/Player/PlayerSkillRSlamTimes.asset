@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!28 &2800000
+Texture2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: PlayerSkillRSlamTimes
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 2
+  m_Width: 256
+  m_Height: 1
+  m_CompleteImageSize: 1024
+  m_MipsStripped: 0
+  m_TextureFormat: 18
+  m_MipCount: 1
+  m_IsReadable: 1
+  m_IsPreProcessed: 0
+  m_IgnoreMipmapLimit: 0
+  m_MipmapLimitGroupName: 
+  m_StreamingMipmaps: 0
+  m_StreamingMipmapsPriority: 0
+  m_VTOnly: 0
+  m_AlphaIsTransparency: 0
+  m_ImageCount: 1
+  m_TextureDimension: 2
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_LightmapFormat: 0
+  m_ColorSpace: 0
+  m_PlatformBlob: 
+  image data: 1024
+  _typelessdata: 00000000a4e0b335a4e0333789c51738a4e0b3385ea92f3989c59739f801f139a4e0333aad0e803a5ea9af3a3acee93a89c5173bdaf6403bf801713be836943ba4e0b33ba3c1d73bad0e003c9e9b163c5ea92f3ca9594b3c3ace693c6494853c89c5973c668bab3cdaf6c03cc118d83cf801f13cafe1053de836143d1489233da4e0333d0446453da3c1573df05b6b3dad0e803d27078b3d9e9b963d48d0a23d5ea9af3d172bbd3da959cb3d4e39da3d3acee93da71cfa3d6494053e6d7b0e3e89c5173ed274213e668b2b3e5f0b363edaf6403ef14f4c3ec118583e6553643ef801713e97267e3eafe1853e34ed8c3ee836943ed8bf9b3e1489a33ea793ab3ea4e0b33e1371bc3e0446c53e8560ce3ea3c1d73e6c6ae13ef05beb3e3a97f53ead0e003fae77053f27070b3f9fbd103f9e9b163ffe0e1a3f2df91a3f91e21b3f2acb1c3ff7b21d3ff8991e3f2c801f3f9365203f2c4a213ff72d223ff410233f21f3233f7ed4243f0cb5253fc894263fb473273fce51283f152f293f8a0b2a3f2ce72a3ffac12b3ff49b2c3f18752d3f684d2e3fe1242f3f84fb2f3f50d1303f44a6313f607a323fa34d333f0d20343f9df1343f53c2353f2d92363f2c61373f4e2f383f93fc383ffbc8393f85943a3f305f3b3ffb283c3fe6f13c3ff1b93d3f19813e3f60473f3fc40c403f45d1403fe194413f9957423f6b19433f57da433f5d9a443f7a59453faf17463ffad4463f5c91473fd34c483f5f07493ffec0493fb0794a3f75314b3f4be84b3f319e4c3f28534d3f2d074e3f40ba4e3f616c4f3f8e1d503fc6cd503f097d513f562b523fabd8523f0885533f6d30543fd7da543f4684553fba2c563f30d4563fa87a573f2220583f9cc4583f1468593f8b0a5a3ffeab5a3f6d4c5b3fd7eb5b3f3b8a5c3f97275d3feac35d3f335f5e3f71f95e3fa3925f3fc72a603fdcc1603fe257613fd6ec613fb780623f8513633f3da5633fde35643f67c5643fd653653f2be1653f636d663f7df8663f7782673f500b683f0793683f9919693f059f693f4a236a3f65a66a3f54286b3f17a96b3fab286c3f0ea76c3f3e246d3f3aa06d3fff1a6e3f8b946e3fdd0c6f3ff1836f3fc6f96f3f5a6e703faae1703fb453713f75c4713feb33723f13a2723feb0e733f6f7a733f9ee4733f744d743feeb4743f091b753fc27f753f16e3753f0145763f80a5763f8f04773f2b62773f4fbe773ff818783f2172783fc6c9783fe31f793f7274793f6fc7793fd5187a3f9e687a3fc5b67a3f44037b3f144e7b3f2f977b3f8fde7b3f2b247c3ffc677c3ffaa97c3f1cea7c3f59287d3fa6647d3ff99e7d3f46d77d3f800d7e3f9a417e3f84737e3f2da37e3f82d07e3f6ffb7e3fdb237f3fab497f3fbe6c7f3fee8c7f3f0caa7f3fdac37f3f0bda7f3f29ec7f3f74f97f3f0000803f
+  m_StreamData:
+    serializedVersion: 2
+    offset: 0
+    size: 0
+    path: 

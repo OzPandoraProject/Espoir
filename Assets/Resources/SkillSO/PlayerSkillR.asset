@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42141cf8eb324aad8935776fa0250525, type: 3}
+  m_Name: PlayerSkillR
+  m_EditorClassIdentifier:
+  _type: 3
+  _cooldown: 60
+  _mpCost: 100
+  _startTrigger: SkillR
+  _comboTrigger:
+  _rotationSpeed: 1080
+  _comboGraceTime: 0.8
+  _fullHitFlow: 18
+  _steps:
+  - stateName: SkillR
+    recoverStateName:
+    moveDistance: 0
+    moveStart: 0
+    moveEnd: 1
+    hits:
+    - time: 0.38702333
+      damageRatio: 2
+      hitStopDuration: 0
+      offset: {x: 0, y: 0, z: 7}
+      size: {x: 8, y: 3.5, z: 9.5}
+    - time: 0.40295959
+      damageRatio: 2
+      hitStopDuration: 0
+      offset: {x: 0, y: 0, z: 7}
+      size: {x: 8, y: 3.5, z: 9.5}
+    - time: 0.41559477
+      damageRatio: 2
+      hitStopDuration: 0
+      offset: {x: 0, y: 0, z: 7}
+      size: {x: 8, y: 3.5, z: 9.5}
+    - time: 0.44393854
+      damageRatio: 2
+      hitStopDuration: 0
+      offset: {x: 0, y: 0, z: 7}
+      size: {x: 8, y: 3.5, z: 9.5}
+    - time: 0.46955038
+      damageRatio: 2
+      hitStopDuration: 0
+      offset: {x: 0, y: 0, z: 7}
+      size: {x: 8, y: 3.5, z: 9.5}
+    effectPrefab: {fileID: 2980615660813890298, guid: 2685168faedc2874ba0909f249a2e3c9, type: 3}
+    effectTime: 0
+    effectLifetime: 0

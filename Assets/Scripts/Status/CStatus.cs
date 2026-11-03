@@ -20,12 +20,14 @@ public struct SStatusOnApply
     public EStatusStats target;
     public float value;
     public bool isConstant;
+    public bool applyStack;
 
-    public SStatusOnApply(EStatusStats target, float value, bool isConstant)
+    public SStatusOnApply(EStatusStats target, float value, bool isConstant, bool applyStack = false)
     {
         this.target = target;
         this.value = value;
         this.isConstant = isConstant;
+        this.applyStack = applyStack;
     }
 }
 
@@ -108,6 +110,8 @@ public struct SStatusAction
     public EStatusAction action;
     [Tooltip("비율은 증가시 1.xx 감소시 0.xx로!")]
     public float param;
+    [Tooltip("스택만큼 적용되게 할지?")]
+    public bool applyStack;
 }
 
 [Serializable]
@@ -136,12 +140,15 @@ public partial class CStatus
     private float _initialTimer;
     private float _removeTimer;
     private float _baseTimer;
+    private int _initialRemoveStack;
+    private int _removeStack;
+    private bool _isStackRemoving = false;
     private EStatusTrigger _trigger;
 
-    private int _intParam;
-    private float _floatParam;
-    private float _timerParam;
-    private bool _boolParam;
+    private int _intParam = 0;
+    private float _floatParam = 0f;
+    private float _timerParam = 0f;
+    private bool _boolParam = false;
 
     public int Id => _id;
     public float Duration => _duration;
@@ -168,15 +175,20 @@ public partial class CStatus
     public EStatusRemove RemoveSwitch => _removeSwitch;
     public float RemoveTimer => _removeTimer;
     public EStatusTrigger Trigger => _trigger;
+    public bool IsStackRemoving
+    {
+        get { return _isStackRemoving; }
+        set { _isStackRemoving = value; }
+    }
 
 
     // private List<Action<CUnit>> _onEquip = new List<Action<CUnit>>();
     private List<SStatusOnApply> _onApply = new List<SStatusOnApply>();
     private List<Action<CUnit>> _onRemove = new List<Action<CUnit>>(); // Deprecated
-    private List<Func<CUnit, CUnit, float, float>> _onAttack = new List<Func<CUnit, CUnit, float, float>>();
-    private List<Func<CUnit, CUnit, float, float>> _onDefence = new List<Func<CUnit, CUnit, float, float>>();
-    private List<Action<CUnit, CUnit, float>> _onHit = new List<Action<CUnit, CUnit, float>>();
-    private List<Action<CUnit, CUnit, float>> _onDamage = new List<Action<CUnit, CUnit, float>>();
+    private List<Func<CUnit, CUnit, float, bool, float>> _onAttack = new List<Func<CUnit, CUnit, float, bool, float>>();
+    private List<Func<CUnit, CUnit, float, bool, float>> _onDefence = new List<Func<CUnit, CUnit, float, bool, float>>();
+    private List<Func<CUnit, CUnit, float, float>> _onHit = new List<Func<CUnit, CUnit, float, float>>();
+    private List<Func<CUnit, CUnit, float, float>> _onDamage = new List<Func<CUnit, CUnit, float, float>>();
     private List<Action<CUnit, float>> _onDelta = new List<Action<CUnit, float>>();
     private List<Action<CUnit, bool>> _onBattleStart = new List<Action<CUnit, bool>>();
     private List<Action<CUnit, bool>> _onBattleEnd = new List<Action<CUnit, bool>>();
@@ -196,21 +208,21 @@ public partial class CStatus
         get => _onRemove;
     }
 
-    public List<Func<CUnit, CUnit, float, float>> OnAttack
+    public List<Func<CUnit, CUnit, float, bool, float>> OnAttack
     {
         get => _onAttack;
     }
 
-    public List<Func<CUnit, CUnit, float, float>> OnDefence
+    public List<Func<CUnit, CUnit, float, bool, float>> OnDefence
     {
         get => _onDefence;
     }
-    public List<Action<CUnit, CUnit, float>> OnHit
+    public List<Func<CUnit, CUnit, float, float>> OnHit
     {
         get => _onHit;
     }
 
-    public List<Action<CUnit, CUnit, float>> OnDamage
+    public List<Func<CUnit, CUnit, float, float>> OnDamage
     {
         get => _onDamage;
     }
@@ -237,35 +249,41 @@ public partial class CStatus
     {
         if (_isPermanent) return;
         _duration -= time;
-        if (_duration < 0)
+        while (_duration < 0)
         {
             switch (_removeSwitch)
             {
                 case EStatusRemove.RemoveAll:
                     target.RemoveStatus(this);
-                    break;
+                    return;
                 case EStatusRemove.RemoveOne:
-                    _stack -= 1;
+                    _stack -= _isStackRemoving ? _removeStack : _initialRemoveStack;
+                    _isStackRemoving = true;
                     if (_stack <= 0)
                     {
                         target.RemoveStatus(this);
+                        return;
                     }
                     else
                     {
                         _duration = _initialTimer + _duration;
                         _baseTimer = _initialTimer;
+                        target.ResyncStatus();
                     }
                     break;
                 case EStatusRemove.RemoveFor:
-                    _stack -= 1;
+                    _stack -= _isStackRemoving ? _removeStack : _initialRemoveStack;
+                    _isStackRemoving = true;
                     if (_stack <= 0)
                     {
                         target.RemoveStatus(this);
+                        return;
                     }
                     else
                     {
                         _duration = _removeTimer + _duration;
                         _baseTimer = _removeTimer;
+                        target.ResyncStatus();
                     }
                     break;
             }

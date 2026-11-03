@@ -11,13 +11,13 @@ using Random = UnityEngine.Random;
 
 public class CTestEnemy : CEnemy
 {
-    public enum EEnemyState
-    {
-        Idle = 0,
-        Moving,
-        Attack,
+    //public enum EEnemyState
+    //{
+    //    Idle = 0,
+    //    Moving,
+    //    Attack,
         
-    }
+    //}
 
     #region 인스팩터
     [Header("Enemy Info")]
