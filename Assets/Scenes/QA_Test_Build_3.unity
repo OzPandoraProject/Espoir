@@ -1286,7 +1286,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: "\uBCF4\uC2A4\uD328\uD134"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8924,6 +8924,7 @@ MonoBehaviour:
   - patternName: "\uB3C4\uB11B"
     triggerName: bAttack04
   _repeatInterval: 5
+  _player: {fileID: 1056612011}
 --- !u!4 &2060200724
 Transform:
   m_ObjectHideFlags: 0

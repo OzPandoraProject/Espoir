@@ -102,12 +102,14 @@ public class CBossPatternDebug : MonoBehaviour
             else if (trigger == "bAttack01")
             {
                 _bossAnimator.SetTrigger(trigger);
+
                 Vector3 origin = preview.transform.position;
                 preview.transform.position = _player.position;
                 preview.ShowCirclePattern(20, 8f);
                 yield return new WaitForSeconds(1.5f);
                 preview.ClearPreview();
                 preview.transform.position = origin;
+
                 yield return new WaitForSeconds(_repeatInterval);
                 continue;
             }
