@@ -82,14 +82,14 @@ public class CBossPatternDebug : MonoBehaviour
                 preview.ClearPreview();
             }
 
-            else if (trigger == "bAttack04")
+            if (trigger == "bAttack04")
             {
                 preview.ShowDonutPattern(20, 18f, 10f);
                 yield return new WaitForSeconds(2f);
                 preview.ClearPreview();
             }
 
-            else if (trigger == "bAttack03")
+            if (trigger == "bAttack03")
             {
                 preview.ShowMultiArcPattern(6, 15f, 60f, 0f);
                 yield return new WaitForSeconds(1f);
