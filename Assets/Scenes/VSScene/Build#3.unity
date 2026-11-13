@@ -3204,7 +3204,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _targetLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 1152
   _previewSkill: {fileID: 11400000, guid: efdc38e7284e4c0d84074866fd3107de, type: 2}
 --- !u!1 &518802704
 GameObject:
@@ -7730,6 +7730,10 @@ PrefabInstance:
     - target: {fileID: 849696862997825102, guid: fc44008c7d95e394abbb953b8b53d960, type: 3}
       propertyPath: m_Name
       value: Boss
+      objectReference: {fileID: 0}
+    - target: {fileID: 849696862997825102, guid: fc44008c7d95e394abbb953b8b53d960, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 1929441329760321138, guid: fc44008c7d95e394abbb953b8b53d960, type: 3}
       propertyPath: m_LocalPosition.x
