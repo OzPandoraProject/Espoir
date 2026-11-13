@@ -24,6 +24,12 @@ public class CInventoryUI : MonoBehaviour
     [SerializeField] private Image _braceletIcon;
     [SerializeField] private Image _ringIcon;
     [SerializeField] private bool _isBattle;
+    [SerializeField] private Image[] _hudQuickSlotIcons = new Image[4];
+    [SerializeField] private TMP_Text[] _hudQuickSlotQuantities = new TMP_Text[4];
+    [SerializeField] private TMP_Text[] _hudQuickSlotCooldownTexts = new TMP_Text[4];
+    [SerializeField] private Transform _playerQuickSlotContent;
+    [SerializeField] private Image[] __hudQuickSlotCooldownFills;
+    [SerializeField] private TMP_Text _goldText;
 
     private enum MenuTarget
     {
@@ -42,11 +48,21 @@ public class CInventoryUI : MonoBehaviour
     private EEquipmentSlot _selectedEquipmentSlot;
     private bool _isMoving;
     private bool _isRegisteringQuickSlot;
+    private Image[] _cooldownFills;
+    private TMP_Text[] _cooldownTexts;
+    private Image[] _quickCooldownFills;
+    private TMP_Text[] _quickCooldownTexts;
 
     private void Awake()
     {
         _itemIcons = new Image[_inventory.MaxItemSlot];
         _quantityTexts = new TMP_Text[_inventory.MaxItemSlot];
+        _cooldownFills = new Image[_inventory.MaxItemSlot];
+        _cooldownTexts = new TMP_Text[_inventory.MaxItemSlot];
+        _quickCooldownFills = new Image[_inventory.QuickSlotLength];
+        _quickCooldownTexts = new TMP_Text[_inventory.QuickSlotLength];
+        CopyCooldownUIToSlots(_slotContent, _inventory.MaxItemSlot);
+        CopyCooldownUIToSlots(_quickSlotContent, _inventory.QuickSlotLength);
 
         for (int i = 0; i < _itemIcons.Length; i++)
         {
@@ -55,6 +71,9 @@ public class CInventoryUI : MonoBehaviour
 
             _itemIcons[i] = slot.Find("ItemIcon").GetComponent<Image>();
             _quantityTexts[i] = slot.Find("QuantityText").GetComponent<TMP_Text>();
+
+            _cooldownFills[i] = slot.Find("CooldownFill")?.GetComponent<Image>();
+            _cooldownTexts[i] = slot.Find("CooldownText")?.GetComponent<TMP_Text>();
 
             BindSlotEvents(
                 slot,
@@ -73,8 +92,10 @@ public class CInventoryUI : MonoBehaviour
 
             _quickSlotIcons[i] = slot.Find("ItemIcon").GetComponent<Image>();
             _quickSlotQuantityTexts[i] = slot.Find("QuantityText").GetComponent<TMP_Text>();
+            _quickCooldownFills[i] = slot.Find("CooldownFill")?.GetComponent<Image>();
+            _quickCooldownTexts[i] = slot.Find("CooldownText")?.GetComponent<TMP_Text>();
 
-            BindSlotEvents(slot,() => ShowQuickSlotTooltip(index, slot),
+            BindSlotEvents(slot, () => ShowQuickSlotTooltip(index, slot),
                 () => ShowQuickSlotMenu(index, slot),
                 () => SelectQuickSlot(index));
         }
@@ -96,11 +117,13 @@ public class CInventoryUI : MonoBehaviour
     private void OnEnable()
     {
         _inventory.OnInventoryChanged += RefreshInventory;
+        _inventory.OnGoldChanged += RefreshGold;
     }
 
     private void OnDisable()
     {
         _inventory.OnInventoryChanged -= RefreshInventory;
+        _inventory.OnGoldChanged -= RefreshGold;
     }
 
     private void Start()
@@ -108,8 +131,12 @@ public class CInventoryUI : MonoBehaviour
         RefreshInventory();
     }
 
+
     private void Update()
     {
+        HandleQuickSlotKeys();
+        RefreshCooldownDisplays();
+
         if (Input.GetKeyUp(KeyCode.I))
         {
             if (_InventoryPanel.activeSelf)
@@ -135,6 +162,7 @@ public class CInventoryUI : MonoBehaviour
             {
                 CloseContextMenu();
             }
+
         }
     }
 
@@ -144,6 +172,8 @@ public class CInventoryUI : MonoBehaviour
         {
             CItem item = _inventory.GetItem(i);
             SetIcon(_itemIcons[i], item?.ItemIcon);
+
+            RefreshGold();
 
             bool showQuantity = item is CItemConsumable;
             _quantityTexts[i].gameObject.SetActive(showQuantity);
@@ -170,13 +200,22 @@ public class CInventoryUI : MonoBehaviour
             bool isRegistered = itemId != -1;
 
             CItemSO item = GetQuickSlotItemSO(i);
-            SetIcon(_quickSlotIcons[i], item != null ? item.ItemIcon : null);
+            Sprite icon = item != null ? item.ItemIcon : null;
+            string quantity = isRegistered ? _inventory.GetTotalQuantity(itemId).ToString() : "0";
 
+
+            SetIcon(_quickSlotIcons[i], item != null ? item.ItemIcon : null);
+            _quickSlotQuantityTexts[i].text = quantity;
             _quickSlotQuantityTexts[i].gameObject.SetActive(isRegistered);
 
-            if (isRegistered)
+            if (i < _hudQuickSlotIcons.Length)
             {
-                _quickSlotQuantityTexts[i].text =_inventory.GetTotalQuantity(itemId).ToString();
+                SetIcon(_hudQuickSlotIcons[i], icon);
+            }
+
+            if (i < _hudQuickSlotQuantities.Length && _hudQuickSlotQuantities[i] != null)
+            {
+                _hudQuickSlotQuantities[i].text = quantity;
             }
         }
     }
@@ -200,7 +239,7 @@ public class CInventoryUI : MonoBehaviour
         BindSlotEvents(slot, () => ShowItemTooltip(_inventory.GetEquipment(equipmentSlot), slot), () => ShowEquipmentMenu(equipmentSlot, slot));
     }
 
-    private void BindSlotEvents(RectTransform slot,System.Action onHover,System.Action onRightClick,System.Action onLeftClick = null)
+    private void BindSlotEvents(RectTransform slot, System.Action onHover, System.Action onRightClick, System.Action onLeftClick = null)
     {
         EventTrigger trigger = slot.GetComponent<EventTrigger>();
         if (trigger == null)
@@ -478,5 +517,120 @@ public class CInventoryUI : MonoBehaviour
         }
 
         CloseContextMenu();
+    }
+
+    private static readonly KeyCode[] _quickSlotKeys =
+    {
+        KeyCode.Alpha1, KeyCode.Alpha2, KeyCode.Alpha3, KeyCode.Alpha4
+    };
+
+    private void HandleQuickSlotKeys()
+    {
+        int slotCount = Mathf.Min(_quickSlotKeys.Length, _inventory.QuickSlotLength);
+
+        for (int i = 0; i < slotCount; i++)
+        {
+            if (Input.GetKeyDown(_quickSlotKeys[i]))
+            {
+                _inventory.TryUseQuickSlot(i, _isBattle);
+            }
+        }
+    }
+
+    private const float CooldownDuration = 15f;
+
+    private void RefreshCooldownDisplays()
+    {
+        if (_InventoryPanel.activeInHierarchy)
+        {
+            for (int i = 0; i < _cooldownFills.Length; i++)
+            {
+                CItem item = _inventory.GetItem(i);
+                float remaining = item is CItemConsumable
+                    ? _inventory.GetCooldownRemaining(item.Id)
+                    : 0f;
+
+                SetCooldownDisplay(_cooldownFills[i], _cooldownTexts[i], remaining);
+            }
+        }
+
+        for (int i = 0; i < _inventory.QuickSlotLength; i++)
+        {
+            int itemId = _inventory.GetQuickSlotId(i);
+            float remaining = itemId == -1
+                ? 0f
+                : _inventory.GetCooldownRemaining(itemId);
+
+            SetCooldownDisplay(_quickCooldownFills[i], _quickCooldownTexts[i], remaining);
+
+            Image hudFill = __hudQuickSlotCooldownFills != null &&
+                            i < __hudQuickSlotCooldownFills.Length
+                ? __hudQuickSlotCooldownFills[i]
+                : null;
+
+            TMP_Text hudText = _hudQuickSlotCooldownTexts != null &&
+                               i < _hudQuickSlotCooldownTexts.Length
+                ? _hudQuickSlotCooldownTexts[i]
+                : null;
+
+            SetCooldownDisplay(hudFill, hudText, remaining);
+        }
+    }
+
+    private void SetCooldownDisplay(Image fill, TMP_Text text, float remaining)
+    {
+        bool showCooldown = remaining > 0f;
+
+        if (fill != null)
+        {
+            fill.fillAmount = Mathf.Clamp01(remaining / CooldownDuration);
+            fill.gameObject.SetActive(showCooldown);
+        }
+
+        if (text != null)
+        {
+            if (showCooldown)
+            {
+                text.text = Mathf.CeilToInt(remaining).ToString();
+            }
+
+            text.gameObject.SetActive(showCooldown);
+        }
+    }
+
+    private void CopyCooldownUIToSlots(Transform content, int slotCount)
+    {
+        if (content == null || content.childCount == 0) return;
+
+        Transform firstSlot = content.GetChild(0);
+        Transform fillTemplate = firstSlot.Find("CooldownFill");
+        Transform textTemplate = firstSlot.Find("CooldownText");
+
+        int count = Mathf.Min(slotCount, content.childCount);
+
+        for (int i = 1; i < count; i++)
+        {
+            Transform slot = content.GetChild(i);
+
+            if (fillTemplate != null && slot.Find("CooldownFill") == null)
+            {
+                Transform fill = Instantiate(fillTemplate, slot, false);
+                fill.name = "CooldownFill";
+                fill.gameObject.SetActive(false);
+            }
+
+            if (textTemplate != null && slot.Find("CooldownText") == null)
+            {
+                Transform text = Instantiate(textTemplate, slot, false);
+                text.name = "CooldownText";
+                text.gameObject.SetActive(false);
+            }
+        }
+    }
+
+    private void RefreshGold()
+    {
+        if (_goldText == null) return;
+        _goldText.text = $"{_inventory.Gold:N0} G";
     }
 }

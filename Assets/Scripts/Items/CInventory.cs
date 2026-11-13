@@ -13,6 +13,7 @@ using UnityEngine;
 public class CInventory : MonoBehaviour
 {
     [SerializeField] private CPlayer _player;
+    [SerializeField] private int _gold;
 
     private List<CItem> _items = new List<CItem>();
 
@@ -492,14 +493,22 @@ public class CInventory : MonoBehaviour
         {
             CItem item = _items[i];
 
-            if (item is CItemConsumable &&
-                item.Id == itemId &&
-                item.Quantity > 0)
+            if (!(item is CItemConsumable) || item.Id != itemId || item.Quantity <= 0)
             {
-                _quickSlotIds[quickIndex] = itemId;
-                OnInventoryChanged?.Invoke();
-                return true;
+                continue;
             }
+
+            for (int slot = 0; slot < _quickSlotIds.Length; slot++)
+            {
+                if (slot != quickIndex && _quickSlotIds[slot] == itemId)
+                {
+                    _quickSlotIds[slot] = EmptyQuickSlotId;
+                }
+            }
+
+            _quickSlotIds[quickIndex] = itemId;
+            OnInventoryChanged?.Invoke();
+            return true;
         }
 
         return false;
@@ -546,11 +555,8 @@ public class CInventory : MonoBehaviour
         {
             CItem item = _items[i];
 
-            if (item is CItemConsumable &&
-                item.Id == itemId &&
-                item.Quantity > 0)
+            if (item is CItemConsumable &&  item.Id == itemId && item.Quantity > 0)
             {
-                // 가방 열기 허용 여부와 관계없이 사용 조건 검사
                 return TryUseItem(i, isBattle);
             }
         }
@@ -597,6 +603,33 @@ public class CInventory : MonoBehaviour
 
             return null;
         }
+    }
+
+    public int Gold => _gold;
+    public event Action OnGoldChanged;
+
+    public bool TryAddGold(int amount)
+    {
+        if (amount <= 0 || (long)_gold + amount > int.MaxValue)
+        {
+            return false;
+        }
+
+        _gold += amount;
+        OnGoldChanged?.Invoke();
+        return true;
+    }
+
+    public bool TrySpendGold(int amount)
+    {
+        if (amount <= 0 || amount > _gold)
+        {
+            return false;
+        }
+
+        _gold -= amount;
+        OnGoldChanged?.Invoke();
+        return true;
     }
 
     /*
