@@ -300,9 +300,29 @@ PrefabInstance:
       value: Npc_Bune
       objectReference: {fileID: 0}
     - target: {fileID: 3919253942390425404, guid: 30019f52f04be454e9ab1e9fbb2ff4b7, type: 3}
+      propertyPath: _script
+      value: 
+      objectReference: {fileID: 11400000, guid: 72ee4003392347949839e704398b9bdd, type: 2}
+    - target: {fileID: 3919253942390425404, guid: 30019f52f04be454e9ab1e9fbb2ff4b7, type: 3}
       propertyPath: _shopUI
       value: 
       objectReference: {fileID: 1315336375}
+    - target: {fileID: 3919253942390425404, guid: 30019f52f04be454e9ab1e9fbb2ff4b7, type: 3}
+      propertyPath: _questTalks.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3919253942390425404, guid: 30019f52f04be454e9ab1e9fbb2ff4b7, type: 3}
+      propertyPath: _questTalks.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: ee05ebcada033db49805248260e98288, type: 2}
+    - target: {fileID: 3919253942390425404, guid: 30019f52f04be454e9ab1e9fbb2ff4b7, type: 3}
+      propertyPath: _questTalks.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: ee05ebcada033db49805248260e98288, type: 2}
+    - target: {fileID: 3919253942390425404, guid: 30019f52f04be454e9ab1e9fbb2ff4b7, type: 3}
+      propertyPath: _questTalks.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: 76bd2903d220d7847be80432bad01e22, type: 2}
     - target: {fileID: 5564712487070810640, guid: 30019f52f04be454e9ab1e9fbb2ff4b7, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.0027999878
@@ -7351,6 +7371,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3911677135374801832, guid: 0e2d050cca53a1d41a3b33f0e685f626, type: 3}
+      propertyPath: _travelGuide
+      value: 
+      objectReference: {fileID: 11400000, guid: 0d6656288c314704097c2aac30aa72eb, type: 2}
+    - target: {fileID: 3911677135374801832, guid: 0e2d050cca53a1d41a3b33f0e685f626, type: 3}
+      propertyPath: _questTalks.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3911677135374801832, guid: 0e2d050cca53a1d41a3b33f0e685f626, type: 3}
+      propertyPath: _questTalks.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 167915277756ee64d80265d719f85379, type: 2}
+    - target: {fileID: 3911677135374801832, guid: 0e2d050cca53a1d41a3b33f0e685f626, type: 3}
+      propertyPath: _questTalks.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: 22daa4fb366a7614d83a7d21c3bd11b3, type: 2}
+    - target: {fileID: 3911677135374801832, guid: 0e2d050cca53a1d41a3b33f0e685f626, type: 3}
+      propertyPath: _questTalks.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: f46d4fe1a3d26f04e982230ed74f3f8e, type: 2}
     - target: {fileID: 8518116438065500505, guid: 0e2d050cca53a1d41a3b33f0e685f626, type: 3}
       propertyPath: m_Name
       value: Npc_Vargas

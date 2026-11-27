@@ -182,7 +182,7 @@ public class CTalkPresenter : MonoBehaviour
             {
                 _shown = _text.Length;
                 _isTyping = false;
-                if (_CHOICES.Count > 0) _isPicking = true;
+                if (_CHOICES.Count > 0 && _lineIndex == _node.LineCount - 1) _isPicking = true;
             }
 
             PaintProgress(now);
@@ -378,7 +378,7 @@ public class CTalkPresenter : MonoBehaviour
         {
             _shown = _text.Length;
             _isTyping = false;
-            if (_CHOICES.Count > 0) _isPicking = true;
+            if (_CHOICES.Count > 0 && _lineIndex == _node.LineCount - 1) _isPicking = true;
             PaintProgress(Time.unscaledTime);
             return;
         }
