@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 913ab69f5b090f942955f8928c810a03, type: 3}
+  m_Name: Quest 1
+  m_EditorClassIdentifier: 
+  _questId: 5c6b38018147ab046b0dd5603ed38e40
+  _assetGuid: 5c6b38018147ab046b0dd5603ed38e40
+  _title: "\uD0D0\uC695\uC758 \uAD70\uC8FC \uBD80\uB124"
+  _objectives:
+  - id: 0f9be10ef72d
+    kind: 0
+    text: "\uC120\uC778\uC7A5 10\uB9C8\uB9AC \uCC98\uCE58"
+    hint: "\uC120\uC778\uC7A5\uC744 \uCC98\uCE58\uD558\uC138\uC694."
+    count: 10
+    enemy: {fileID: 6010845450976818939, guid: 3f801ab3746f9e042820b7227c453b0d, type: 3}
+    boss: 0
+    skills: []
+    requireLink: 0
+    requireFinisher: 0
+    status: {fileID: 0}
+    statusOwner: 0
+    stack: 0
+    item: {fileID: 0}
+    countEarlierUse: 0
+    npcId: 
+    requireFullStack: 0
+    useDestination: 0
+    destinationScene: 0
+    destinationName: 
+    destinationPoint: {x: 0, y: 0, z: 0}
+    destinationNpcId: 
+    arriveRadius: 0
+    supplyItem: {fileID: 0}
+    supplyCount: 0
+    replacementItem: {fileID: 0}
+  _reportText: "\uC758\uB8B0\uC778\uC5D0\uAC8C \uBCF4\uACE0\uD558\uAE30"
+  _reportNpcId: bune
+  _prerequisite: {fileID: 11400000, guid: 92412fe57099c6c40b7056be0338e5f0, type: 2}
+  _requiredBosses: 0
+  _bossClearReward: 0

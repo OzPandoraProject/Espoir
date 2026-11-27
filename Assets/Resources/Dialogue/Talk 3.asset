@@ -1,0 +1,99 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2a9cfc51bb93f24eab9de60c80fcaf6, type: 3}
+  m_Name: Talk 3
+  m_EditorClassIdentifier: 
+  _startNode: offer
+  _summonedStartNode: 
+  _nodes:
+  - id: offer
+    lines:
+    - "\uC5B4\uC11C\uC624\uAC8C \uC9C8\uD22C\uC758 \uAD70\uC8FC\uC5EC."
+    - "\uBC8C\uC368\uBD80\uD130 \uADF8\uB300\uC758 \uB208\uC5D0 \uBCF4\uC774\uB294
+      \uAD70. \uB098\uB97C \uC8FD\uC774\uACA0\uB2E4\uB294 \uBCF5\uC218\uC2EC\uC774."
+    - "\uD5C8\uB098.. \uB098\uB97C \uC8FD\uC774\uBA74 \uBCA8\uD398\uACE0\uB974\uB97C
+      \uC8FD\uC774\uC9C0 \uBABB\uD560\uAC83\uC774\uB124."
+    - "\uB098\uB294 \uB531\uD788 \uADF8\uB300\uC640 \uC801\uB300\uD558\uACE0 \uC2F6\uC9C4
+      \uC54A\uAD70. \uC624\uD788\uB824.. \uB3C4\uC640\uC8FC\uACE0 \uC2F6\uC744 \uC815\uB3C4\uC57C."
+    - "\uADF8\uB300\uAC00 \uBCA8\uD398\uACE0\uB974\uB97C \uBB34\uCC0C\uB974\uBA74
+      \uB0B4\uAC00 \uADF8\uB300\uC5D0\uAC8C \uAC74 \uC800\uC8FC\uB97C \uD480\uC5B4\uC8FC\uC9C0.
+      \uB2E4\uB9CC \uADF8 \uC804\uC5D0 \uB0B4 \uBD80\uD0C1\uC880 \uB4E4\uC5B4\uC8FC\uC5C8\uC74C
+      \uD558\uB294\uAD70."
+    - "\uC120\uC778\uC7A5\uC5D0\uC11C \uB098\uC624\uB294 \uAFC0\uC744 \uC5BB\uACE0
+      \uC2F6\uC5B4\uC11C \uB9D0\uC774\uC57C. \uADFC\uB370 \uADF8\uB300\uAC19\uC740
+      \uC774\uAC00 \uC9C1\uC811 \uB450\uC190\uC73C\uB85C \uAC00\uC838\uC62C \uAC83
+      \uAC19\uC9C4 \uC54A\uAD70."
+    - "\uB0B4 \uAD8C\uC18D\uC744 \uC2DC\uCF1C \uAC00\uC838\uC624\uAC8C \uC2DC\uD0AC\uD14C\uB2C8
+      \uC120\uC778\uC7A5 10\uB9C8\uB9AC\uB9CC \uCC98\uCE58\uD574 \uC8FC\uAC8C\uB098. "
+    ask: "\uC5B4\uB5A4\uAC00? \uBC1B\uC544 \uC8FC\uACA0\uB098?"
+    choices:
+    - text: "\uC218\uB77D\uD558\uAE30"
+      to: accepted
+      questAction: 1
+    - text: "\uB098\uC911\uC5D0"
+      to: bye
+      questAction: 0
+    next: 
+    end: 0
+    dest: 
+  - id: report
+    lines: []
+    ask: "\uBC8C\uC368 \uB05D\uB0C8\uB098 \uBCF4\uAD70. \uC9C8\uD22C\uC758 \uAD70\uC8FC\uC5EC."
+    choices:
+    - text: "\uBCF4\uACE0\uD558\uAE30"
+      to: done
+      questAction: 2
+    - text: "\uB098\uC911\uC5D0"
+      to: bye
+      questAction: 0
+    next: 
+    end: 0
+    dest: 
+  - id: accepted
+    lines:
+    - "\uB2E4\uB140\uC624\uAC8C\uB098."
+    ask: 
+    choices: []
+    next: 
+    end: 1
+    dest: 
+  - id: progress
+    lines:
+    - "\uC544\uC9C1\uC778\uAC00? \uC9C8\uD22C\uC758 \uAD70\uC8FC\uC5EC."
+    ask: 
+    choices: []
+    next: 
+    end: 1
+    dest: 
+  - id: done
+    lines:
+    - "\uACE0\uB9D9\uAD70."
+    ask: 
+    choices: []
+    next: 
+    end: 1
+    dest: 
+  - id: bye
+    lines:
+    - "\uADF8\uB798 \uB098\uC911\uC5D0 \uC624\uB77C\uACE0. \uADF8\uB300\uB294 \uB0B4\uAC00
+      \uD544\uC694\uD560\uD14C\uB2C8."
+    ask: 
+    choices: []
+    next: 
+    end: 1
+    dest: 
+  _questLink:
+    quest: {fileID: 11400000, guid: 5c6b38018147ab046b0dd5603ed38e40, type: 2}
+    offerNode: offer
+    progressNode: progress
+    reportNode: report
+    doneNode: done

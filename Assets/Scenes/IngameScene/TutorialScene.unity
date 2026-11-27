@@ -2277,7 +2277,7 @@ MonoBehaviour:
   _isCreature: 0
   _creatureHeight: 1.2
   _bodyBone: {fileID: 0}
-  _script: {fileID: 11400000, guid: dce31e2163bbd3d4498c19ca30b59773, type: 2}
+  _script: {fileID: 11400000, guid: 8b31f953e16ce8a41b23997fcdc8fbdf, type: 2}
   _travelGuide: {fileID: 0}
   _questTalks: []
   _headBone: {fileID: 477051991}
