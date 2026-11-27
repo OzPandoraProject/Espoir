@@ -125,6 +125,13 @@ public class CTestEnemy : CEnemy
 
     private void FixedUpdate()
     {
+        if(_isDie == true || this.HpCurrent <= 0f)
+        {
+            _rb.velocity = Vector3.zero;
+
+            return;
+        }
+
         OnTargetMove_Fixed();
 
 
