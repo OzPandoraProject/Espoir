@@ -209,6 +209,7 @@ public class CTalkPresenter : MonoBehaviour
     {
         float now = Time.unscaledTime;
         bool isSummoning = _summonTitle != null && _summonTitle.IsPlaying;
+        bool showNpcUI = !_isOpen && !isSummoning && (_targetShop == null || !_targetShop.IsOpen);
         bool isCinematic = _talkCamera != null && _talkCamera.IsCinematic;
         Vector3 feet = _player != null ? _player.transform.position : Vector3.zero;
 
@@ -238,7 +239,7 @@ public class CTalkPresenter : MonoBehaviour
 
             bool isVisible = TryGetHeadScreen(npc, out Vector2 head);
             float distance = FlatDistance(feet, npc.FeetPosition);
-            bool isOn = distance < _nameRadius && isVisible && !_isOpen && !isSummoning && npc.IsTalkable;
+            bool isOn = distance < _nameRadius && isVisible && showNpcUI && npc.IsTalkable;
             pair.Value.Tick(head, isOn, now);
         }
 
@@ -252,7 +253,7 @@ public class CTalkPresenter : MonoBehaviour
         {
             Vector2 head = Vector2.zero;
             bool isHeadVisible = _current != null && TryGetHeadScreen(_current, out head);
-            bool isOn = _isInRange && isHeadVisible && !_isOpen && !isSummoning && !isCinematic;
+            bool isOn = _isInRange && isHeadVisible && showNpcUI && !isCinematic;
             _prompt.Tick(head, isOn, now);
         }
     }
@@ -484,7 +485,15 @@ public class CTalkPresenter : MonoBehaviour
         {
             foreach (CTalkChoice choice in node.choices)
             {
-                if (_current.CanChoose(choice)) _CHOICES.Add(choice);
+                if (!_current.CanChoose(choice)) continue;
+                if (_summoner == null && choice.questAction == ETalkQuestAction.None &&
+                    !string.IsNullOrEmpty(choice.to))
+                {
+                    CTalkNode target = _current.FindNode(choice.to, _mapKey);
+                    if (target?.end == ETalkEnd.Summon && !target.HasChoices && string.IsNullOrEmpty(target.next))
+                        continue;
+                }
+                _CHOICES.Add(choice);
             }
         }
 

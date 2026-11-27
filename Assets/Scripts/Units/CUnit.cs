@@ -144,6 +144,8 @@ public abstract class CUnit : MonoBehaviour
     public IReadOnlyList<CStatus> Status => _status;
     #endregion
 
+    protected virtual bool ShouldAdvanceStatusDuration(CStatus status) => true;
+
     protected virtual void Awake()
     {
         _hpMax = _baseHpMax;
@@ -291,7 +293,10 @@ public abstract class CUnit : MonoBehaviour
                     _status[i].OnDelta[j](this, t);
                 }
             }
-            _status[i].OnDuration(this, t);
+            if (ShouldAdvanceStatusDuration(_status[i]))
+            {
+                _status[i].OnDuration(this, t);
+            }
         }
     }
 

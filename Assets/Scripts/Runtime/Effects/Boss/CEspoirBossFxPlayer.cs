@@ -48,6 +48,7 @@ public class CEspoirBossFxPlayer : MonoBehaviour
     }
 
     public int PreviewGroup { get; set; } = -1;
+    public int OnlyObjectIndex { get; set; } = -1;
     private bool _retainedGround;
     private readonly Dictionary<CElementSetting, Transform> _groupRoots = new Dictionary<CElementSetting, Transform>();
 
@@ -253,7 +254,7 @@ public class CEspoirBossFxPlayer : MonoBehaviour
 
     void Spawn(int oi)
     {
-        if (_retainedGround)
+        if (_retainedGround || (OnlyObjectIndex >= 0 && oi != OnlyObjectIndex))
             return;
         var o = _clip.objs[oi];
         var sdef = _clip.shaders[o.shader];

@@ -14,6 +14,8 @@ Shader "Hidden/Espoir/Chapter2Bloom"
     float4 _Blur;        // xy 한 칸 방향(텍셀), z 커널 반경
     float4 _Factors;
     float _Weights[11];
+    TEXTURE2D_SAMPLER2D(_Chapter2BloomCharacterMask, sampler_Chapter2BloomCharacterMask);
+    float _CharacterAmount;
     float _FactorLast;
     float _AddScale;     // 가산 합성 배율
 
@@ -60,6 +62,13 @@ Shader "Hidden/Espoir/Chapter2Bloom"
         float3 bloom = SAMPLE_TEXTURE2D(_Chapter2BloomTex, sampler_Chapter2BloomTex, i.texcoord).rgb;
         return float4(src.rgb + bloom * _AddScale, src.a);
     }
+    float4 FragAddMasked(VaryingsDefault i) : SV_Target
+    {
+        float4 src = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, i.texcoord);
+        float3 bloom = SAMPLE_TEXTURE2D(_Chapter2BloomTex, sampler_Chapter2BloomTex, i.texcoord).rgb;
+        float mask = SAMPLE_TEXTURE2D(_Chapter2BloomCharacterMask, sampler_Chapter2BloomCharacterMask, i.texcoord).r;
+        return float4(src.rgb + bloom * _AddScale * lerp(1.0, _CharacterAmount, saturate(mask)), src.a);
+    }
     ENDHLSL
 
     SubShader
@@ -95,6 +104,14 @@ Shader "Hidden/Espoir/Chapter2Bloom"
             HLSLPROGRAM
             #pragma vertex VertDefault
             #pragma fragment FragAdd
+            ENDHLSL
+        }
+
+        Pass
+        {
+            HLSLPROGRAM
+            #pragma vertex VertDefault
+            #pragma fragment FragAddMasked
             ENDHLSL
         }
     }

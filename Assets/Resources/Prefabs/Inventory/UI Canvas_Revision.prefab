@@ -15472,6 +15472,7 @@ GameObject:
   - component: {fileID: 5966160840414229872}
   - component: {fileID: 3572258833570789994}
   - component: {fileID: 3944929240714498156}
+  - component: {fileID: 854295366491654040}
   m_Layer: 5
   m_Name: ItemTooltip
   m_TagString: Untagged
@@ -15539,6 +15540,18 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!225 &854295366491654040
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5574378747963758819}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0
 --- !u!1 &5616175976895261284
 GameObject:
   m_ObjectHideFlags: 0

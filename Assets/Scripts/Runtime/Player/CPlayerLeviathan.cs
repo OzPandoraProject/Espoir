@@ -38,6 +38,7 @@ public class CPlayerLeviathan
     private int PlannedHitCount => _settings == null ? 0 :
         _settings.BaseHitCount + (IsEnhanced ? _settings.BonusHitCount : 0);
 
+    internal bool WasFinisherEnhanced => _finisherStack >= MaxStack;
     internal bool IsIdle => _state == ELeviathanState.None;
     internal bool IsBuffActive => _state == ELeviathanState.Buff;
     internal bool IsFinisherPending => _isFinisherPending;

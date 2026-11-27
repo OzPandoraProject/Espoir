@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Text;
 using UnityEngine;
@@ -170,7 +170,7 @@ public class CEspoirBossFxClipData
         {
             if (Encoding.ASCII.GetString(r.ReadBytes(4)) != "EBF1")
                 throw new Exception("EspoirBossFx: 데이터 형식이 아님");
-            r.ReadInt32();
+            bool sharedGeometry = r.ReadInt32() == 2;
             var d = new CEspoirBossFxClipData();
             d.clip = Str(r);
             d.dt = r.ReadSingle();
@@ -207,20 +207,35 @@ public class CEspoirBossFxClipData
                 bool hn = r.ReadByte() != 0,
                     hu = r.ReadByte() != 0;
                 int ns = r.ReadInt32();
-                g.pos = V3(r, g.vcount);
+                int source = sharedGeometry ? r.ReadInt32() : -1;
+                g.pos = source < 0 ? V3(r, g.vcount) : d.geoms[source].pos;
                 if (hn)
-                    g.nrm = V3(r, g.vcount);
+                {
+                    source = sharedGeometry ? r.ReadInt32() : -1;
+                    g.nrm = source < 0 ? V3(r, g.vcount) : d.geoms[source].nrm;
+                }
                 if (hu)
-                    g.uv = V2(r, g.vcount);
+                {
+                    source = sharedGeometry ? r.ReadInt32() : -1;
+                    g.uv = source < 0 ? V2(r, g.vcount) : d.geoms[source].uv;
+                }
                 g.slots = new Vector4[ns][];
                 for (int s = 0; s < ns; s++)
-                    g.slots[s] = V4(r, g.vcount);
+                {
+                    source = sharedGeometry ? r.ReadInt32() : -1;
+                    g.slots[s] = source < 0 ? V4(r, g.vcount) : d.geoms[source].slots[s];
+                }
                 int ni = r.ReadInt32();
                 if (ni >= 0)
                 {
-                    g.idx = new int[ni];
-                    for (int k = 0; k < ni; k++)
-                        g.idx[k] = r.ReadInt32();
+                    source = sharedGeometry ? r.ReadInt32() : -1;
+                    if (source < 0)
+                    {
+                        g.idx = new int[ni];
+                        for (int k = 0; k < ni; k++)
+                            g.idx[k] = r.ReadInt32();
+                    }
+                    else g.idx = d.geoms[source].idx;
                 }
                 g.drawStart = r.ReadInt32();
                 g.drawCount = r.ReadInt32();

@@ -58,57 +58,67 @@ MonoBehaviour:
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []
   - state: Boss_Attack02_Backspin
     prefab: {fileID: 6004643168734677749, guid: 0c4847a1f4c6a7e43acf613eae4ef250, type: 3}
     scale: 1
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []
   - state: Boss_Attack03_SlamUppercut
     prefab: {fileID: 9149940843089234379, guid: 36b33c3c8e0e1734a9573a28ca50ed60, type: 3}
     scale: 1
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []
   - state: Boss_Sub01_RightLeftSlam
     prefab: {fileID: 1239580890412519468, guid: 928d716669357ab46935688a87d58e3f, type: 3}
     scale: 1
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []
   - state: Boss_Sub02_Whirlwind
     prefab: {fileID: 275062964369401687, guid: d7be51c6bb668dd469b4091c3e2acba3, type: 3}
     scale: 1
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []
   - state: Boss_Sub03_DoubleSealSlam
     prefab: {fileID: 3753709097739633613, guid: 08ad4a21935cb904d837d11884dc0ae1, type: 3}
     scale: 1
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []
   - state: Boss_Sub04_RingBurst
     prefab: {fileID: 6976283992663939004, guid: 52f8f3993eefdcb4888ce35e91bd15ff, type: 3}
     scale: 1
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []
   - state: Boss_Main01_OrbSlam
     prefab: {fileID: 254755276733861479, guid: d243430b333a9a04a9416b638fd7c607, type: 3}
     scale: 1
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []
   - state: Boss_Main02_SafeZone
     prefab: {fileID: 1210930067332836459, guid: 1630e4183bc9b2b4188e0d73ad371503, type: 3}
     scale: 1
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []
   - state: Boss_Main03_LightningBeam
-    prefab: {fileID: 5511868211107228742, guid: aa6587cb70c06224dbb0fe34eaa0d020, type: 3}
+    prefab: {fileID: 1596556570140021387, guid: f6f7cdc445ebad74e99d26651ad5bdb5, type: 3}
     scale: 1
     offset: {x: 0, y: 0, z: 0}
     holdTime: 1.7
     holdDuration: 0
+    elements: []

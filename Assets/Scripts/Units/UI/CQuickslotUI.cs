@@ -24,6 +24,8 @@ public class CQuickslotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
     private string _tooltip = "";
 
     public bool HasItem => _hasItem;
+    public string Name => _name;
+    public string Description => _tooltip;
 
     public string Tooltip => $"{_name}\n<size=75%>{_tooltip}</size>";
 

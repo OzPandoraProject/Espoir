@@ -209,6 +209,7 @@ public partial class CCharacterInfoUI : MonoBehaviour
 
         CGameManager manager = CGameManager.Instance;
         if (manager != null && manager.GameState != EGameState.Idle) return false;
+        if (manager != null && manager.BattleState == EBattleState.BossBattle) return false;
 
         FindSceneObjects();
         if (_player == null || _player.HpCurrent <= 0f) return false;

@@ -17,6 +17,7 @@ public class CTestEnemySpawner : MonoBehaviour
     private float _timer = 0;
     private float _peaceTimer = 0f;
     private bool _isBattleActive;
+    private int groundMask;
 
     private void Awake()
     {
@@ -36,6 +37,7 @@ public class CTestEnemySpawner : MonoBehaviour
                 return;
             }
         }
+        groundMask = LayerMask.GetMask("Ground");
     }
 
     void Start()
@@ -72,7 +74,7 @@ public class CTestEnemySpawner : MonoBehaviour
         Vector3 offset = _player.transform.position - transform.position;
         offset.y = 0f;
 
-        return offset.sqrMagnitude <= _spawnRadius * _spawnRadius;
+        return offset.sqrMagnitude <= 4 * _spawnRadius * _spawnRadius;
     }
 
     private bool ResetWhenMax()
@@ -146,7 +148,20 @@ public class CTestEnemySpawner : MonoBehaviour
 
             if (enableSpawn)
             {
-                spawnPos = targetPos;
+                Vector3 rayOrigin = targetPos + Vector3.up * 2f;
+
+                if (!Physics.Raycast(
+                        rayOrigin,
+                        Vector3.down,
+                        out RaycastHit groundHit,
+                        5f,
+                        groundMask,
+                        QueryTriggerInteraction.Ignore))
+                {
+                    continue;
+                }
+
+                spawnPos = groundHit.point + Vector3.up * 0.25f;
                 return true;
             }
         }

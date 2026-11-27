@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface IBoss
 {
+    bool IsGroggy { get; }
     public void ResetBattleState();
     public bool TryGetGroggyInfo(out float remainHp, out float maxHp, out float remainTime, out float maxTime);
 }

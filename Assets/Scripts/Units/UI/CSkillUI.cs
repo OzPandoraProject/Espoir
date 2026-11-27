@@ -31,7 +31,10 @@ public class CSkillUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     private const string _DamageColor = "#FFA64D";
     private CPlayer _player;
 
-    public string Tooltip => $"{_name}\n<size=75%>{ReplaceRealDamage(_tooltipText, _player.Attack)}</size>";
+    public string Name => _name;
+    public string Description => _player != null ? ReplaceRealDamage(_tooltipText, _player.Attack) : _tooltipText;
+    public string Tooltip => $"{Name}\n<size=75%>{Description}</size>";
+
     public string TooltipText
     {
         get { return _tooltipText; }

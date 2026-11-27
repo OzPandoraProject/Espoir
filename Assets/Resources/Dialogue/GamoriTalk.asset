@@ -37,6 +37,8 @@ MonoBehaviour:
       to: garden
     - text: "\uC65C \uBB34\uB300 \uC704\uC5D0 \uC549\uC544 \uC788\uC9C0?"
       to: stage
+    - text: "\uADF8 \uBB34\uB300, \uB0B4\uAC00 \uB05D\uB0B4 \uC8FC\uC9C0"
+      to: battle
     - text: "\uC774\uB9CC \uAC00 \uBCFC\uAC8C"
       to: bye
     next: 
@@ -72,4 +74,15 @@ MonoBehaviour:
     choices: []
     next: 
     end: 1
+    dest: 
+  - id: battle
+    lines:
+    - "\uC5B4\uBA38\u2026 \uB098\uC640 \uCDA4\uC744 \uCD94\uACE0 \uC2F6\uB2E4\uB294
+      \uAC70\uB2C8?"
+    - "\uC88B\uC544. \uD55C \uACE1 \uCD94\uC790, \uC9C8\uD22C\uC758 \uAD70\uC8FC.\n\uB9C8\uC9C0\uB9C9
+      \uBC15\uC790\uAE4C\uC9C0 \uC11C \uC788\uC744 \uC218 \uC788\uB2E4\uBA74."
+    ask: 
+    choices: []
+    next: 
+    end: 3
     dest: 

@@ -35,6 +35,8 @@ public class CInventoryUI : MonoBehaviour
     [SerializeField] private TMP_Text _quickSlotHintText;
     [SerializeField] private GameObject _quickSlotHintPanel;
 
+    private RectTransform _tooltipAnchor;
+
     private enum MenuTarget
     {
         Bag,
@@ -359,12 +361,14 @@ public class CInventoryUI : MonoBehaviour
         _tooltipInfo.text = description;
 
         SetUIPosition(_itemTooltip, slot);
+        _tooltipAnchor = slot;
         _itemTooltip.SetActive(true);
     }
 
     private void HideTooltip()
     {
         _itemTooltip.SetActive(false);
+        _tooltipAnchor = null;
     }
 
     private void SetUIPosition(GameObject targetUI, RectTransform slot)
@@ -788,6 +792,21 @@ public class CInventoryUI : MonoBehaviour
         if (_itemIcons != null)
         {
             RefreshInventory();
+        }
+    }
+
+    public void ShowProductTooltip(CItemSO product, RectTransform row)
+    {
+        if (product == null || row == null) return;
+
+        ShowTooltip(product.ItemIcon, product.Name, product.Description, row);
+    }
+
+    public void HideProductTooltip(RectTransform row)
+    {
+        if (row != null && _tooltipAnchor == row)
+        {
+            HideTooltip();
         }
     }
 }

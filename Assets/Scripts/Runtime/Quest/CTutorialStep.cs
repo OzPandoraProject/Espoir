@@ -41,6 +41,8 @@ public class CTutorialStep
     public string objectiveId;
     [Tooltip("목표 시작 대사 ID. 비우면 대화를 생략합니다.")]
     public string introNode;
+    public string equipObjectiveId;
+    public string equippedIntroNode;
     [Tooltip("목표 안내 자막. {0}에 현재 진행 수량이 표시됩니다.")]
     public string remind;
     public CTutorialKey[] keys;

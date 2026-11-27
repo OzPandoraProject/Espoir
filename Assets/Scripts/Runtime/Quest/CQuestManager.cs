@@ -650,7 +650,7 @@ public static class CQuestManager
         return objective.enemy == null || enemy.SourcePrefab == objective.enemy;
     }
 
-    private static bool IsEquipped(CPlayer player, CQuestObjective objective)
+    internal static bool IsEquipped(CPlayer player, CQuestObjective objective)
     {
         if (player.Equipment == null) return false;
 

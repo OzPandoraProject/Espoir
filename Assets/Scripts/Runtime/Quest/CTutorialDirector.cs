@@ -134,7 +134,11 @@ public class CTutorialDirector : MonoBehaviour
     private void OnDisable()
     {
         CUnit.OnDamageResolved -= HandleDamage;
-        if (_playerSkill != null) _playerSkill.BasicAttackHitProcessed -= HandleSwing;
+        if (_playerSkill != null)
+        {
+            _playerSkill.BasicAttackHitProcessed -= HandleSwing;
+            _playerSkill.ProtectEnhancedFinisher = false;
+        }
         if (_player != null && _player.Inventory != null)
         {
             _player.Inventory.OnInventoryChanged -= HandleInventoryChanged;
@@ -161,6 +165,11 @@ public class CTutorialDirector : MonoBehaviour
             if (CQuestManager.GetPendingReplacement(_quest) != null) _discardPhase = EDiscardPhase.Warning;
         }
 
+        if (_playerSkill != null)
+        {
+            _playerSkill.ProtectEnhancedFinisher = _state == EQuestState.Active &&
+                _quest.GetObjective(_index)?.kind == EQuestObjectiveKind.LeviathanFinisher;
+        }
         CQuestManager.IsSupplyHeld = _inventoryUI != null && _inventoryUI.IsOpen;
 
         if (_phase == EPhase.Do && _step != null) CheckFailedInput();
@@ -330,6 +339,11 @@ public class CTutorialDirector : MonoBehaviour
         if (!CanOpenTalk()) return;
 
         string node = _state == EQuestState.Reportable ? _reportIntroNode : _step.introNode;
+        if (_state == EQuestState.Active && !string.IsNullOrEmpty(_step.equippedIntroNode))
+        {
+            CQuestObjective equip = _quest.GetObjective(_quest.FindObjectiveIndex(_step.equipObjectiveId));
+            if (equip != null && CQuestManager.IsEquipped(_player, equip)) node = _step.equippedIntroNode;
+        }
         if (TryOpenPradonaTalk(node) && _state == EQuestState.Reportable) _hasReportTalk = true;
     }
 
@@ -437,6 +451,7 @@ public class CTutorialDirector : MonoBehaviour
             _leviathanReminds != null && _leviathanReminds.Length >= 3)
         {
             CPlayerLeviathan leviathan = _player.Skill.Leviathan;
+            if (leviathan.State == ELeviathanState.Finisher) return null;
             int stack = leviathan.Stack;
             if (leviathan.State == ELeviathanState.None) return _leviathanReminds[0];
             if (stack >= leviathan.MaxStack) return _leviathanReminds[2];
@@ -452,18 +467,21 @@ public class CTutorialDirector : MonoBehaviour
     {
         if (_guide == null) return;
 
-        bool isHidden = (_talk != null && _talk.IsOpen) ||
+        bool finishing = _playerSkill != null && _playerSkill.ProtectEnhancedFinisher &&
+            _playerSkill.Leviathan.State == ELeviathanState.Finisher;
+        bool isHidden = finishing || (_talk != null && _talk.IsOpen) ||
             (CGameManager.Instance != null && CGameManager.Instance.GameState != EGameState.Idle &&
             !(_inventoryUI != null && _inventoryUI.IsOpen));
         _guide.SetHidden(isHidden);
         _guide.AvoidRect(_inventoryUI != null && _inventoryUI.IsOpen ? _inventoryUI.PanelRect : null);
 
         int current = BuildKeys();
+        if (finishing) _KEYS.Clear();
         _guide.ShowKeys(_KEYS, current);
 
         bool isLearning = _phase == EPhase.Do || _phase == EPhase.Talk;
         CQuestObjective objective = _state == EQuestState.Active ? _quest.GetObjective(_index) : null;
-        RectTransform highlight = isLearning && !UsePotionFromBag(objective) ? _stepHighlight : null;
+        RectTransform highlight = !finishing && isLearning && !UsePotionFromBag(objective) ? _stepHighlight : null;
         RectTransform itemSlot = FindObjectiveItemSlot(objective);
         if (itemSlot != null) highlight = itemSlot;
 
@@ -662,6 +680,8 @@ public class CTutorialDirector : MonoBehaviour
         if (state == ELeviathanState.Buff && _leviathanStatus != null) Hold(_player, _leviathanStatus.Id);
         else ReleaseHeld();
 
+        if (state == ELeviathanState.Finisher && _leviathanState != state && _guide != null) _guide.ClearSubtitle();
+
         if (_leviathanState == ELeviathanState.Buff && state == ELeviathanState.Buff &&
             leviathan.Stack >= leviathan.MaxStack && _remindShown != GetRemind())
         {
@@ -670,7 +690,7 @@ public class CTutorialDirector : MonoBehaviour
 
         if (_leviathanState == ELeviathanState.Finisher && state == ELeviathanState.None)
         {
-            Toast(_prompts.finisherTooEarly);
+            if (!leviathan.WasFinisherEnhanced) Toast(_prompts.finisherTooEarly);
             _player.Skill.ResetCooldowns(false, false, true);
             _player.RestoreMp(Mathf.RoundToInt(_player.MaxMp));
         }

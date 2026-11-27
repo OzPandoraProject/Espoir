@@ -12,6 +12,7 @@ public sealed class CChapter2BloomRenderer : PostProcessEffectRenderer<CChapter2
     private const int _PASS_BLUR = 1;
     private const int _PASS_COMPOSITE = 2;
     private const int _PASS_ADD = 3;
+    private const int _PASS_ADD_MASKED = 4;
 
     private static readonly int _THRESHOLD = Shader.PropertyToID("_Threshold");
     private static readonly int _BLUR = Shader.PropertyToID("_Blur");
@@ -26,7 +27,11 @@ public sealed class CChapter2BloomRenderer : PostProcessEffectRenderer<CChapter2
     private readonly int[] _HORIZONTAL = new int[_MIP_COUNT];
     private readonly int[] _VERTICAL = new int[_MIP_COUNT];
     private readonly int[] _MIP_TEX = new int[_MIP_COUNT];
+    private static readonly int _CHARACTER_MASK = Shader.PropertyToID("_Chapter2BloomCharacterMask");
+    private static readonly int _CHARACTER_AMOUNT = Shader.PropertyToID("_CharacterAmount");
+
     private Shader _shader;
+    private Material _maskMaterial;
     private static readonly int _WEIGHTS_ID = Shader.PropertyToID("_Weights");
     private readonly float[][] _WEIGHTS = new float[_MIP_COUNT][];
 
@@ -36,6 +41,8 @@ public sealed class CChapter2BloomRenderer : PostProcessEffectRenderer<CChapter2
     public override void Init()
     {
         _shader = Shader.Find("Hidden/Espoir/Chapter2Bloom");
+        Shader maskShader = Shader.Find("Hidden/Espoir/PlayerPostMask");
+        if (maskShader) _maskMaterial = new Material(maskShader) { hideFlags = HideFlags.HideAndDontSave };
 
         for (int i = 0; i < _MIP_COUNT; i++)
         {
@@ -52,7 +59,23 @@ public sealed class CChapter2BloomRenderer : PostProcessEffectRenderer<CChapter2
     }
 
     /// <summary>
-    /// 밝은 곳을 흐려 원본 화면에 더합니다.
+    /// 캐릭터 가림 판정에 사용할 깊이 텍스처를 요청합니다.
+    /// </summary>
+    public override DepthTextureMode GetCameraFlags()
+    {
+        return settings.characterAmount < 1f ? DepthTextureMode.Depth : DepthTextureMode.None;
+    }
+
+    /// <summary>
+    /// 마스크 렌더링에 사용한 재질을 해제합니다.
+    /// </summary>
+    public override void Release()
+    {
+        RuntimeUtilities.Destroy(_maskMaterial);
+    }
+
+    /// <summary>
+    /// 밝은 곳을 흐려 원본 화면에 더합니다. 캐릭터 위에는 정한 비율만큼만 얹습니다.
     /// </summary>
     public override void Render(PostProcessRenderContext context)
     {
@@ -106,9 +129,22 @@ public sealed class CChapter2BloomRenderer : PostProcessEffectRenderer<CChapter2
         cmd.BlitFullscreenTriangle(_VERTICAL[0], _HORIZONTAL[0], sheet, _PASS_COMPOSITE);
 
         cmd.SetGlobalTexture(_BLOOM_TEX, _HORIZONTAL[0]);
-        cmd.BlitFullscreenTriangle(context.source, context.destination, sheet, _PASS_ADD);
+
+        bool hasMask = _maskMaterial && settings.characterAmount < 1f && CEnvironmentGradeMask.HasTargets;
+        if (hasMask)
+        {
+            context.GetScreenSpaceTemporaryRT(cmd, _CHARACTER_MASK, 0, RenderTextureFormat.R8,
+                RenderTextureReadWrite.Linear);
+            cmd.SetRenderTarget(_CHARACTER_MASK);
+            cmd.ClearRenderTarget(false, true, Color.clear);
+            CEnvironmentGradeMask.DrawMasks(cmd, context.camera, _maskMaterial);
+            cmd.SetGlobalTexture(_CHARACTER_MASK, _CHARACTER_MASK);
+            sheet.properties.SetFloat(_CHARACTER_AMOUNT, settings.characterAmount);
+        }
+        cmd.BlitFullscreenTriangle(context.source, context.destination, sheet, hasMask ? _PASS_ADD_MASKED : _PASS_ADD);
 
         cmd.ReleaseTemporaryRT(_BRIGHT);
+        if (hasMask) cmd.ReleaseTemporaryRT(_CHARACTER_MASK);
 
         for (int i = 0; i < _MIP_COUNT; i++)
         {

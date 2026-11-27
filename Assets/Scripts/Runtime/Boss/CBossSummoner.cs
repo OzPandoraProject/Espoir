@@ -46,8 +46,11 @@ public class CBossSummoner : MonoBehaviour
     [SerializeField] private float _cineHeight = 4.2f;
     [SerializeField] private float _cineFov = 42f;
 
-    [Header("보스 소환해제 거리")]
+    [Header("보스 소환해제 거리 (영역없으면 이거씀)")]
     [SerializeField] private float _unsummonDistance = 25f;
+
+    [Header("아레나 영역 (거리보다 우선시함)")]
+    [SerializeField] private CBossArena _arena;
 
     private readonly List<Renderer> _RENDERERS = new List<Renderer>();
     private readonly List<Material[]> _ORIGINAL_MATERIALS = new List<Material[]>();
@@ -265,14 +268,24 @@ public class CBossSummoner : MonoBehaviour
 
         if (_isSummoned && _player != null)
         {
-            Vector3 offset = _player.transform.position - _altar.position;
-            offset.y = 0f;
+            Vector3 playerPosition = _player.transform.position;
 
-            if (offset.sqrMagnitude > _unsummonDistance * _unsummonDistance)
+            if (_arena != null)
             {
-                Unsummon();
+                if (!_arena.Contains(playerPosition)) Unsummon();
+            }
+            else if (_altar != null)
+            {
+                Vector3 offset = playerPosition - _altar.position;
+                offset.y = 0f;
+
+                if (offset.sqrMagnitude > _unsummonDistance * _unsummonDistance)
+                {
+                    Unsummon();
+                }
             }
         }
+
         // 페이드 인 시작부터 소환 장면이 끝나 플레이어가 움직일 수 있을 때까지, 그리고 잠재우는 동안은 AI 를 대기 상태로 묶음
         // (공격 타이머 · 상태를 매 프레임 처음 값으로). 애니메이터는 그대로 돌아 대기 애니가 재생된다.
         bool isHolding = _summonTime >= 0f || _cineTime >= 0f || _dismissTime >= 0f;
@@ -325,6 +338,7 @@ public class CBossSummoner : MonoBehaviour
 
         if (_boss.HpCurrent < _boss.HpMax) _boss.GetHeal(1f, ERatioSwitch.ByMax, true);
         if (_boss is IBoss targetBoss) targetBoss.ResetBattleState();
+        if (_boss is CPrideBoss prideBoss) prideBoss.ResetPhaseState();
         _boss.ResetDropState();
     }
 

@@ -21,6 +21,9 @@ public sealed class CChapter2Bloom : PostProcessEffectSettings
     [Tooltip("시작 밝기 경계의 부드러운 폭")]
     [Range(0.001f, 1f)] public FloatParameter smoothWidth = new FloatParameter { value = 0.01f };
 
+    [Tooltip("캐릭터에 적용할 번짐 비율")]
+    [Range(0f, 1f)] public FloatParameter characterAmount = new FloatParameter { value = 1f };
+
     /// <summary>
     /// 세기가 0 이면 효과를 건너뜁니다.
     /// </summary>

@@ -61,7 +61,7 @@ MonoBehaviour:
     loop: 1
   - soundType: 3
     audioClip: {fileID: 7510011602997939391}
-    volume: 0.75
+    volume: 0.65
     loop: 1
   - soundType: 4
     audioClip: {fileID: 1344529677658508459}
@@ -69,28 +69,28 @@ MonoBehaviour:
     loop: 1
   - soundType: 5
     audioClip: {fileID: 3578542985473658017}
-    volume: 0.75
+    volume: 0.73
     loop: 1
   - soundType: 6
     audioClip: {fileID: 3199664634484076545}
-    volume: 0.75
+    volume: 0.65
     loop: 1
   - soundType: 7
     audioClip: {fileID: 422360027959029055}
-    volume: 0.75
+    volume: 0.76
     loop: 1
   _effectSounds:
   - soundType: 5
     audioClip: {fileID: 8837352987764451349}
-    volume: 0.75
+    volume: 1
     loop: 0
   - soundType: 6
     audioClip: {fileID: 7662201181652302982}
-    volume: 0.75
+    volume: 0.65
     loop: 0
   - soundType: 7
     audioClip: {fileID: 1278505894820194280}
-    volume: 0.75
+    volume: 0.91
     loop: 0
   - soundType: 8
     audioClip: {fileID: 4292186907587584279}
@@ -139,7 +139,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 1504568951599324340, guid: 2b4ec46212f673044bd291e3a223d03f, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 53e1e73f42cf2af48986edd9bb3a77b9, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1291,7 +1291,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 1504568951599324340, guid: 2b4ec46212f673044bd291e3a223d03f, type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 12f9768a750ca3a44961a4f89ea07215, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

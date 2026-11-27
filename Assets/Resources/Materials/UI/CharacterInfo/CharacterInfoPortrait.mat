@@ -60,7 +60,7 @@ Material:
     - _GlowSigma: {r: 1, g: 1, b: 1, a: 1}
     - _GradAnim: {r: 12, g: 0, b: 0, a: 0}
     - _ImageGlow: {r: 1, g: 1, b: 1, a: 0.35}
-    - _ImageRect: {r: 0, g: 0, b: 54, a: 54}
+    - _ImageRect: {r: 8.071579, g: 8.782105, b: 37.856844, a: 37.856844}
     - _InsetShadow: {r: 0, g: 0, b: 0, a: 0}
     - _InsetShadowGeom: {r: 0, g: 0, b: 0, a: 0}
     - _MaskStops: {r: 0, g: 1, b: 0, a: 0}

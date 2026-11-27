@@ -96,6 +96,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be2c0dc89e924bd42b9c5a1bad77ed58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 0}
   _polygonPoint: []
   _polygonTriangles: 
   _polygonSides: 10
@@ -185,11 +186,19 @@ MonoBehaviour:
   _baseAttack: 20
   _baseDefence: 50
   _debugLog: 0
+  _statusEffectAnchor: {fileID: 0}
+  _statusEffectOffset: {x: 0, y: 0, z: 0}
+  _statusEffectRadius: 1
+  _name: 
+  _nickname: 
   _targetStatSO: {fileID: 0}
+  _dropCount: 1
+  _drops: []
+  _sourcePrefab: {fileID: 0}
   _player: {fileID: 0}
-  _tartgetMask:
+  _targetMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
   _sightCheck: 1
   _obtacleMask:
     serializedVersion: 2
@@ -199,15 +208,24 @@ MonoBehaviour:
   - {fileID: 0}
   _bossState: 0
   _previewPattern: {fileID: 0}
+  _mainCount: 0
   _animator: {fileID: 8927090917389968015}
   _rotateSpeed: 1000
   _atkTime: 3
   _normalAtkRange: 6
   _detectedRange: 10
+  _returnDelayTime: 3
+  _grogiTime: 5
   _whirlRange: 15
   _whirlInner: 7
   _donutRange: 12
   _donutInner: 7
+  _previewInnerPattern: {fileID: 0}
+  _areaAngle: 30
+  _divideArea: 6
+  _thunderOrbitRadius: 11
+  _thunderSpeed: 90
+  _thunderHitRadius: 2.5
 --- !u!95 &8927090917389968015
 Animator:
   serializedVersion: 5
@@ -367,6 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be2c0dc89e924bd42b9c5a1bad77ed58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _player: {fileID: 0}
   _polygonPoint: []
   _polygonTriangles: 
   _polygonSides: 10
@@ -385,6 +404,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1816808535497012195}
     m_Modifications:
+    - target: {fileID: 1828835763566577055, guid: 4bb6cabb61784c2428ada8419e06ad9b, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3062583089197516956, guid: 4bb6cabb61784c2428ada8419e06ad9b, type: 3}
       propertyPath: m_Name
       value: Canvas

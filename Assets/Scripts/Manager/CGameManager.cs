@@ -12,6 +12,7 @@ public enum EGameState
     Story = 1,
     UI = 2,
     Setting = 3,
+    Cinematic = 4,
     ForcePause = 9,
     Gameover = 10,
 }
@@ -414,7 +415,6 @@ public class CGameManager : MonoBehaviour
                 _soundManager.PlayBGM(EBackgroundSound.BaseBGM);
                 break;
             case EGameState.UI:
-                SetPaused(false);
                 break;
             case EGameState.Setting:
                 _menuBackground.alpha = 0;
@@ -439,7 +439,6 @@ public class CGameManager : MonoBehaviour
                 break;
             case EGameState.UI:
                 _soundManager.PlaySE(EEffectSound.QuestionAppear);
-                SetPaused(true);
                 break;
             case EGameState.Setting:
                 _soundManager.PlaySE(EEffectSound.QuestionAppear);
@@ -454,6 +453,7 @@ public class CGameManager : MonoBehaviour
                 SetPaused(true);
                 break;
             case EGameState.Gameover:
+                CloseGameplayPanels();
                 _soundManager.PlaySE(EEffectSound.Beep);
                 EndBossTimer(_attempBoss, false);
                 _menuBackground.alpha = 1;
@@ -488,18 +488,13 @@ public class CGameManager : MonoBehaviour
                 _soundManager.PlayBGM(EBackgroundSound.BaseBGM);
                 break;
             case EBattleState.NormalBattle:
+                CloseGameplayPanels();
                 _player.InvokeOnBattleStart(false);
                 _soundManager.PlayBGM(EBackgroundSound.BattleBGM);
                 break;
+
             case EBattleState.BossBattle:
-                if (_shopUI != null && _shopUI.IsOpen)
-                {
-                    _shopUI.Close();
-                }
-                if (_inventoryUI != null && _inventoryUI.IsOpen)
-                {
-                    _inventoryUI.SetInventoryOpen(false);
-                }
+                CloseGameplayPanels();
                 _player.InvokeOnBattleStart(true);
                 _soundManager.PlayBGM(EBackgroundSound.BossBGM);
                 break;
@@ -597,6 +592,24 @@ public class CGameManager : MonoBehaviour
             {
                 _player.RemoveStatus(26, true);
             }
+        }
+    }
+
+    private void CloseGameplayPanels()
+    {
+        if (_shopUI != null && _shopUI.IsOpen)
+        {
+            _shopUI.Close();
+        }
+
+        if (_inventoryUI != null && _inventoryUI.IsOpen)
+        {
+            _inventoryUI.SetInventoryOpen(false);
+        }
+
+        if (_characterInfoUI != null && _characterInfoUI.IsOpen)
+        {
+            _characterInfoUI.Close();
         }
     }
 
@@ -874,20 +887,22 @@ public class CGameManager : MonoBehaviour
             return;
         }
         _bossClearState |= target;
-        if (_bossTime.ContainsKey(target) && _bossTime[target] <= time && _bossTime[target] > 0f)
+        bool newRecord = !_bossTime.TryGetValue(target, out float best) || best <= 0f || time < best;
+        if (newRecord)
+        {
+            _bossTime[target] = time;
+        }
+        else
         {
             CLogger.Log($"[CGameManager] {target} 처치 기록 갱신실패 -> 데이터 저장되지 않음.");
-            if (target == EBossClear.Pigritia)
-            {
-                StartCoroutine(ShowPopup("벨패고르 처치", "시간 : " + FormatTimer(time)));
-            }
-            return;
         }
-        _bossTime[target] = time;
-        if (target == EBossClear.Pigritia)
-        {
-            StartCoroutine(ShowPopup("벨패고르 처치", "시간 : " + FormatTimer(time) + "\n최고기록 갱신!"));
-        }
+
+        if (target != EBossClear.Pigritia && target != EBossClear.Luxuria) return;
+
+        string title = target == EBossClear.Luxuria ? "가모리 처치" : "벨페고르 처치";
+        string description = "시간 : " + FormatTimer(time);
+        if (newRecord) description += "\n최고기록 갱신!";
+        StartCoroutine(ShowPopup(title, description));
     }
 
     public bool TryGetBossClearTime(EBossClear target, out float time)

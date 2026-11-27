@@ -2,9 +2,7 @@
 using UnityEngine.UI;
 
 /// <summary>
-/// 보스 소환 시 화면 가장자리를 어둡게 하고 왼쪽에 이름판을 표시합니다.
-/// 왼쪽 7% · 위 30% 자리에 옅은 베일 → '나태의 군주' → '벨페고르' 가 왼쪽에서 오른쪽으로 걷히며 나타나고, 금선이 오른쪽으로 사라지며 그어짐.
-/// 종료 구간에는 이름판을 왼쪽으로 이동시키며 숨깁니다.
+/// 보스 연출 중 화면 가장자리와 이름판을 표시합니다.
 /// </summary>
 public class CBossSummonTitleView : MonoBehaviour
 {
@@ -20,7 +18,7 @@ public class CBossSummonTitleView : MonoBehaviour
     [SerializeField] private RectTransform _line;
     [SerializeField] private CanvasGroup _lineGroup;
 
-    [Header("웹 값 (초)")]
+    [Header("연출 시간 (초)")]
     [SerializeField] private float _totalTime = 5.8f;
     [SerializeField] private float _vignetteTime = 5.6f;
     [SerializeField] private float _veilDelay = 2f;
@@ -40,6 +38,7 @@ public class CBossSummonTitleView : MonoBehaviour
     [SerializeField] private float _top = 0.3f;
 
     private float _startTime = -1f;
+    private float _playDuration;
 
     /// <summary>
     /// 소환 연출 중 HUD, 이름표와 상호작용 표시를 숨길 때 사용합니다.
@@ -61,6 +60,15 @@ public class CBossSummonTitleView : MonoBehaviour
     /// </summary>
     public void Play()
     {
+        Play(_totalTime);
+    }
+
+    /// <summary>
+    /// 지정한 시간 동안 타이틀을 재생합니다.
+    /// </summary>
+    public void Play(float duration)
+    {
+        _playDuration = duration;
         _startTime = Time.unscaledTime;
         gameObject.SetActive(true);
         Apply(0f);
@@ -72,19 +80,23 @@ public class CBossSummonTitleView : MonoBehaviour
 
         float t = Time.unscaledTime - _startTime;
 
-        if (t >= _totalTime)
+        if (t >= _playDuration)
         {
-            _startTime = -1f;
-            gameObject.SetActive(false);
+            Stop();
             return;
         }
 
         Apply(t);
     }
 
+    internal void Stop()
+    {
+        _startTime = -1f;
+        gameObject.SetActive(false);
+    }
+
     private void Apply(float t)
     {
-        // sm-vg: 0% 0 → 15% 1 → 80% 1 → 100% 0 (구간마다 ease)
         float v = t / _vignetteTime;
         float vignette;
 
@@ -99,7 +111,6 @@ public class CBossSummonTitleView : MonoBehaviour
         _cardGroup.alpha = 1f - outK;
         float cardLeft = parent.rect.width * _left;
         _card.anchoredPosition = new Vector2(cardLeft - outK * _outOffset, -parent.rect.height * _top);
-        // 베일: left -7vw (= 카드 왼쪽만큼 되돌아가 화면 왼쪽 끝에서 시작), top -40
         _veilRect.anchoredPosition = new Vector2(-cardLeft, 40f);
 
         _veil.alpha = CCssEase.Evaluate(CCssEase.EASE_OUT, Mathf.Clamp01((t - _veilDelay) / _veilDuration));
@@ -111,14 +122,13 @@ public class CBossSummonTitleView : MonoBehaviour
         _line.localScale = new Vector3(lineK, 1f, 1f);
     }
 
-    // sm3-w: mask-image linear-gradient(90deg, #000 45%, transparent 55%) · mask-size 260% · position 100% → 0
-    //  글자 상자(안쪽 여백 포함) 폭 W 기준으로 보이는 경계 = 1.43W - 1.6W·p, 흐린 폭 0.26W → RectMask2D 오른쪽 여백 + 부드러움으로 그대로 재현
     private static void Wipe(RectMask2D mask, float progress)
     {
         float width = mask.rectTransform.rect.width;
         float position = 1f - progress;
         float edge = 1.43f * width - 1.6f * width * position;
         int softness = Mathf.Max(1, Mathf.RoundToInt(0.26f * width));
+        // 글자가 나타날 때 왼쪽 가장자리의 번짐이 잘리지 않도록 여백을 둔다.
         mask.softness = new Vector2Int(softness, 0);
         mask.padding = new Vector4(-softness - 8f, -40f, width - edge, -40f);
     }

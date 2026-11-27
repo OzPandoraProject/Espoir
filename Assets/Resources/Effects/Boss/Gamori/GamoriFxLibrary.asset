@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9663083fb25e2324c858a8d0548ae9dc, type: 3}
+  m_Name: GamoriFxLibrary
+  m_EditorClassIdentifier: 
+  shaders:
+  - {fileID: 4800000, guid: ee50d76f64b720340bf19904da65580c, type: 3}
+  - {fileID: 4800000, guid: e529f63326e2bae40b359ed39d0dfe9c, type: 3}
+  - {fileID: 4800000, guid: ddfe158fc5aa596488e81b204911b347, type: 3}
+  - {fileID: 4800000, guid: 0397e533b07ffa84983458b27f0873a6, type: 3}
+  - {fileID: 4800000, guid: 0e66e52ad3518154488a5cc2d828ae1b, type: 3}
+  - {fileID: 4800000, guid: 62ea498dd090ee64cabb243ea1c22cf0, type: 3}
+  - {fileID: 4800000, guid: 8885b7319d772fc478ae4a5ebc0ac535, type: 3}
+  - {fileID: 4800000, guid: f3766dcd06444f54199296bcc98386de, type: 3}
+  - {fileID: 4800000, guid: cd718911e87207a48aa67ecbefdf288e, type: 3}
+  - {fileID: 4800000, guid: f33d38ab23cb28a44a6dc47ceaabf7fd, type: 3}
+  - {fileID: 4800000, guid: c10cdc92ac73f5149840d646bd25b1ff, type: 3}
+  - {fileID: 4800000, guid: 51bb1653964854448bc62c7b3081704d, type: 3}
+  - {fileID: 4800000, guid: 88998675d61d7e34896019d955534a15, type: 3}
+  - {fileID: 4800000, guid: 2aae25f44b6a45844b45bbf50f246130, type: 3}
+  - {fileID: 4800000, guid: 65e87c053989af04b8128eef0cf3bc19, type: 3}
+  - {fileID: 4800000, guid: bdb865650664dd343acad63e330e6e23, type: 3}
+  - {fileID: 4800000, guid: 72a2c93037d6d4c47b897f96d9439aca, type: 3}
+  - {fileID: 4800000, guid: 068d70e1e28470d4b8414c0705b46cb0, type: 3}
+  - {fileID: 4800000, guid: 4892e9f5b0f91ce4b8d9d3252d09fd48, type: 3}
+  - {fileID: 4800000, guid: fda98b441aa22b946a50947cb7ed577a, type: 3}
+  - {fileID: 4800000, guid: 1d596f6c77663c143a78c31e30b2aa19, type: 3}
+  - {fileID: 4800000, guid: 8945d1cf46808634fb9d0f5a49074402, type: 3}
+  - {fileID: 4800000, guid: 4f5c248a0267656428e7737df5e820a8, type: 3}
+  - {fileID: 4800000, guid: 99874599df0fe6646852a150aaa0dcc8, type: 3}
+  - {fileID: 4800000, guid: 9e797b61cdabd8f498677134da711c27, type: 3}
+  - {fileID: 4800000, guid: e48bcf2d53a80aa46822d7a93957385d, type: 3}
+  - {fileID: 4800000, guid: 8f63ff939b0f00f418049962d771ede2, type: 3}
+  - {fileID: 4800000, guid: e275659100ca40c4c9faddc36b7dc8a2, type: 3}
+  - {fileID: 4800000, guid: d6843c8bba5ee2c46a9fd03c084cc209, type: 3}
+  - {fileID: 4800000, guid: a3c1af75a876f974abc515fd41cab519, type: 3}
+  - {fileID: 4800000, guid: 675aea43f14359144872a763ad25a33c, type: 3}
+  - {fileID: 4800000, guid: 04153d44c17c538408a8c8cd8d69229b, type: 3}
+  noise: {fileID: 2800000, guid: 76b1a39f3735b5f438a91fdc66414252, type: 2}
+  webToneMap: 1
+  bloomFeed: 0
+  webBloom: 0.55
+  blend: 2
+  screenShader: {fileID: 4800000, guid: a1af738e7c454ee4ca02befc8c06d49d, type: 3}
+  inkMaskShader: {fileID: 4800000, guid: d561077ef7de75844b07efba40919ccd, type: 3}

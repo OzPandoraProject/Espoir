@@ -736,11 +736,15 @@ public class CPlayerSkill : MonoBehaviour
         return true;
     }
 
+    internal bool ProtectEnhancedFinisher { get; set; }
+
     private bool CanCancelInto(ESkillType type)
     {
         CSkillSO current = _currentSkill.data;
         if (type == ESkillType.Rush)
         {
+            if (ProtectEnhancedFinisher && _LEVIATHAN.State == ELeviathanState.Finisher && _LEVIATHAN.IsEnhanced)
+                return false;
             return current.Type != ESkillType.Rush;
         }
 

@@ -66,6 +66,14 @@ public class CShopUI : MonoBehaviour
         {
             graphic.raycastTarget = false;
         }
+        Image rowBackground = row.GetComponent<Image>();
+        if (rowBackground != null)
+        {
+            rowBackground.raycastTarget = true;
+        }
+
+        CShopTooltip hover = row.AddComponent<CShopTooltip>();
+        hover.Bind(_inventoryUI, product);
         // 버튼 배경만 클릭을 받습니다.
         if (button.targetGraphic != null) button.targetGraphic.raycastTarget = true;
         Image buttonImage = button.GetComponent<Image>();

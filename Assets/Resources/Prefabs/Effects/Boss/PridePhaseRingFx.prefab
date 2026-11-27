@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8429432954633625100
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8980672208743499704}
+  - component: {fileID: 6976283992663939004}
+  m_Layer: 0
+  m_Name: PridePhaseRingFx
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8980672208743499704
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8429432954633625100}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6976283992663939004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8429432954633625100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4049213b40cc9244299bf3cd170a68d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _elements:
+  - objectIndex: 0
+    isGroup: 1
+    group: 0
+    hidden: 0
+    rotation: 0
+    scale: 1
+    keepAfterAttack: 0
+    offset: {x: 0, y: 0, z: 0}
+    overrideRadius: 1
+    overrideDuration: 0
+    duration: 1.0500001
+    innerRadius: 10
+    outerRadius: 18
+  data: {fileID: 4900000, guid: 292d1b5dfa7756a4b823d5c7f3d2ebfb, type: 3}
+  library: {fileID: 11400000, guid: e02f754b02f8a4f4eab42a91e4d87d37, type: 2}
+  stageScale: 1
+  screenEffects: 1
+  effectLights: 0
+  speed: 1
+  holdTime: 0
+  holdDuration: 0
+  inkRenderers: []

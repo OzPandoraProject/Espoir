@@ -3735,6 +3735,7 @@ MonoBehaviour:
   _cineHeight: 4.2
   _cineFov: 42
   _unsummonDistance: 25
+  _arena: {fileID: 0}
 --- !u!4 &764427457
 Transform:
   m_ObjectHideFlags: 0
@@ -5094,6 +5095,14 @@ PrefabInstance:
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: 1eafd52b777069e43ae8246b3ec18498, type: 3}
+    - target: {fileID: 3981137211721397068, guid: c09567da9c497ff4aad4e4a905fa9b24, type: 3}
+      propertyPath: _backgroundSounds.Array.data[0].volume
+      value: 0.71
+      objectReference: {fileID: 0}
+    - target: {fileID: 3981137211721397068, guid: c09567da9c497ff4aad4e4a905fa9b24, type: 3}
+      propertyPath: _backgroundSounds.Array.data[2].volume
+      value: 0.66
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

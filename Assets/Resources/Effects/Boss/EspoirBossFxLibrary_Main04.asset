@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9663083fb25e2324c858a8d0548ae9dc, type: 3}
+  m_Name: EspoirBossFxLibrary_Main04
+  m_EditorClassIdentifier: 
+  shaders:
+  - {fileID: 4800000, guid: ee50d76f64b720340bf19904da65580c, type: 3}
+  - {fileID: 4800000, guid: 697539273ed9ead42b4afcf00ae494da, type: 3}
+  - {fileID: 4800000, guid: 10ae5653de4e03348b9f18fbb0db4aa4, type: 3}
+  - {fileID: 4800000, guid: c4b701742e6528a4096d670aaa3780ce, type: 3}
+  - {fileID: 4800000, guid: e45237c551123754c8d0a34d08f9d384, type: 3}
+  - {fileID: 4800000, guid: 0a6ea03111460494a907e1fb2e312791, type: 3}
+  - {fileID: 4800000, guid: 8255a7f723e927a45836a9de12ce2d56, type: 3}
+  - {fileID: 4800000, guid: 12cfec5f8c3e1064f9bc5c463c064156, type: 3}
+  - {fileID: 4800000, guid: e231ceba2a7ca5541aa3a700311652cb, type: 3}
+  - {fileID: 4800000, guid: e93885e833d798543a55bb751d9d2cfe, type: 3}
+  - {fileID: 4800000, guid: 675cf4de53e0d4f4b8bf97146a1c4453, type: 3}
+  - {fileID: 4800000, guid: 766673374f17ba74f9497f1708c686d1, type: 3}
+  - {fileID: 4800000, guid: 19a17b18264ae0042a86ded4770314e0, type: 3}
+  - {fileID: 4800000, guid: a51e1138b3cb46646934c8047cd82382, type: 3}
+  - {fileID: 4800000, guid: 7acd867ce1c159c4ca43f9099a565575, type: 3}
+  - {fileID: 4800000, guid: afc144222bff0364b922d31d61cf51f5, type: 3}
+  - {fileID: 4800000, guid: 1fbc9ba0860f5214383d9931057a4ca9, type: 3}
+  - {fileID: 4800000, guid: 5eb727686d124d64aa4067d838a683dd, type: 3}
+  - {fileID: 4800000, guid: 17dccbf5ceead5545b30dfc508de516f, type: 3}
+  - {fileID: 4800000, guid: c7d4601e7430a1b48ba0c95b8b1e386a, type: 3}
+  - {fileID: 4800000, guid: 454428102cbc56f47b696d9d254d710a, type: 3}
+  - {fileID: 4800000, guid: 861549574c0307743bee35b4158df0a2, type: 3}
+  - {fileID: 4800000, guid: efb28075598cb7444b81d615c7013cf4, type: 3}
+  - {fileID: 4800000, guid: 4504a59d4bac86944ab0f615192a84e4, type: 3}
+  - {fileID: 4800000, guid: 220be11011021fe49bd7c448d5457328, type: 3}
+  - {fileID: 4800000, guid: caca7112b0e69064a8665886cffac35a, type: 3}
+  - {fileID: 4800000, guid: b84b8688d8074cf4cab29702fb1ae8cd, type: 3}
+  - {fileID: 4800000, guid: 17cab4f6ee1548d5aa5a89a67693f819, type: 3}
+  - {fileID: 4800000, guid: 1405ff128a24472497f89bae495b4e38, type: 3}
+  - {fileID: 4800000, guid: d265c1febe784f7db298a62b0b8feb86, type: 3}
+  noise: {fileID: 2800000, guid: 76b1a39f3735b5f438a91fdc66414252, type: 2}
+  webToneMap: 1
+  bloomFeed: 0
+  webBloom: 0.9
+  blend: 2
+  screenShader: {fileID: 4800000, guid: 6268f6e91d061e44b918f0a216a8e5ee, type: 3}
+  inkMaskShader: {fileID: 4800000, guid: d561077ef7de75844b07efba40919ccd, type: 3}

@@ -36,6 +36,8 @@ public class QACheatCommands : MonoBehaviour
         DebugLogConsole.AddCommand<int>("clear", "플레이어 상태이상을 제거합니다. (예: clear 10)", Cheat_ClearStatus);
 
         DebugLogConsole.AddCommand<int>("boss", "보스 최대 체력의 입력한 %만큼 깎습니다. (예: boss 10)", Cheat_DamageBossByPercent);
+
+        DebugLogConsole.AddCommand("tutorial", "튜토리얼 퀘스트를 완료 처리합니다.", Cheat_SkipTutorial);
     }
 
     private InputActionMap _playerMap;
@@ -197,25 +199,26 @@ public class QACheatCommands : MonoBehaviour
             return;
         }
 
-        CSlothBoss[] bosses = FindObjectsOfType<CSlothBoss>();
-        if (bosses == null || bosses.Length == 0)
-        {
-            CLogger.Log("[QA] 씬에서 보스를 찾지 못했습니다.");
-            return;
-        }
-
+        CEnemy[] enemies = FindObjectsOfType<CEnemy>();
         float ratio = Mathf.Clamp(percent, 1, 100) / 100f;
+        int count = 0;
 
-        for (int i = 0; i < bosses.Length; i++)
+        for (int i = 0; i < enemies.Length; i++)
         {
-            CSlothBoss boss = bosses[i];
-            if (boss == null || boss.HpCurrent <= 0f)
+            CEnemy boss = enemies[i];
+            if (boss is not IBoss || boss.HpCurrent <= 0f)
             {
                 continue;
             }
 
             boss.GetDamage(ratio, ERatioSwitch.ByMax);
-            CLogger.Log($"[QA] 보스 체력 {percent}% 감소. 현재 {boss.HpCurrent} / {boss.HpMax}");
+            count++;
+            CLogger.Log($"[QA] {boss.name} 체력 {percent}% 감소. 현재 {boss.HpCurrent} / {boss.HpMax}");
+        }
+
+        if (count == 0)
+        {
+            CLogger.Log("[QA] 씬에서 보스를 찾지 못했습니다.");
         }
     }
 
@@ -395,6 +398,59 @@ public class QACheatCommands : MonoBehaviour
         }
 
         CLogger.Log($"[QA] 적 {count}명에게 상태이상 {id}를 {stack}스택 부여합니다.");
+    }
+
+    /// <summary>
+    /// 튜토리얼 스킵 치트
+    /// </summary>
+    private void Cheat_SkipTutorial()
+    {
+        const string questId = "tutorial_leaving_day";
+
+        if (!CQuestManager.IsReady)
+        {
+            CLogger.Log("[QA] 퀘스트가 아직 준비되지 않았습니다.");
+            return;
+        }
+
+        BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Static;
+        System.Type manager = typeof(CQuestManager);
+        var quests = (System.Collections.IDictionary)manager.GetField("_QUESTS", flags).GetValue(null);
+
+        if (!quests.Contains(questId))
+        {
+            CLogger.Log("[QA] 튜토리얼 퀘스트를 찾지 못했습니다.");
+            return;
+        }
+
+        CQuestSO quest = (CQuestSO)quests[questId];
+        var records = (System.Collections.IDictionary)manager.GetField("_RECORDS", flags).GetValue(null);
+        var active = (System.Collections.IList)manager.GetField("_ACTIVE", flags).GetValue(null);
+        System.Type recordType = manager.GetNestedType("CRecord", BindingFlags.NonPublic);
+
+        object record = records.Contains(questId) ? records[questId] : System.Activator.CreateInstance(recordType);
+        recordType.GetField("quest").SetValue(record, quest);
+        recordType.GetField("state").SetValue(record, EQuestState.Completed);
+        recordType.GetField("index").SetValue(record, quest.Objectives.Count);
+        records[questId] = record;
+
+        for (int i = active.Count - 1; i >= 0; i--)
+        {
+            if (recordType.GetField("quest").GetValue(active[i]) == quest)
+            {
+                active.RemoveAt(i);
+            }
+        }
+
+        FieldInfo version = manager.GetField("_version", flags);
+        version.SetValue(null, (int)version.GetValue(null) + 1);
+
+        CTalkPresenter talk = FindObjectOfType<CTalkPresenter>();
+        if (talk != null && talk.IsOpen)
+        {
+            talk.Close();
+        }
+        CLogger.Log("[QA] 튜토리얼을 건너뛰었습니다.");
     }
 
     private CPlayer FindPlayer()

@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2a9cfc51bb93f24eab9de60c80fcaf6, type: 3}
+  m_Name: PrideStatueTalk
+  m_EditorClassIdentifier:
+  _startNode: hello
+  _summonedStartNode: awake
+  _nodes:
+  - id: hello
+    lines: []
+    ask: "\uc624\ub9cc\uc758 \uad70\uc8fc \ubca8\ub9ac\uc5d8\uc744 \uc18c\ud658\ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?"
+    choices:
+    - text: "\uc608"
+      to: yes
+    - text: "\uc544\ub2c8\uc694"
+      to: no
+    next: ""
+    end: 0
+    dest: ""
+  - id: yes
+    lines:
+    - "\uc11d\uc0c1\uc758 \ub208\uc5d0 \uae08\ube5b\uc774 \ubc88\uc9c4\ub2e4."
+    ask: ""
+    choices: []
+    next: ""
+    end: 3
+    dest: ""
+  - id: no
+    lines:
+    - "\uc11d\uc0c1\uc740 \ub2e4\uc2dc \uace0\uc694\ud574\uc84c\ub2e4."
+    ask: ""
+    choices: []
+    next: ""
+    end: 1
+    dest: ""
+  - id: awake
+    lines: []
+    ask: "\ubca8\ub9ac\uc5d8\uc744 \ub2e4\uc2dc \uc7a0\uc7ac\uc6b0\uc2dc\uaca0\uc2b5\ub2c8\uae4c?"
+    choices:
+    - text: "\uc7a0\uc7ac\uc6b4\ub2e4"
+      to: sleep
+    - text: "\uadf8\ub300\ub85c \ub454\ub2e4"
+      to: keep
+    next: ""
+    end: 0
+    dest: ""
+  - id: sleep
+    lines:
+    - "\uc11d\uc0c1\uc758 \uae08\ube5b\uc774 \uc0ac\uadf8\ub77c\ub4e0\ub2e4."
+    ask: ""
+    choices: []
+    next: ""
+    end: 4
+    dest: ""
+  - id: keep
+    lines:
+    - "\uc11d\uc0c1\uc740 \ub9d0\uc5c6\uc774 \uc655\uc88c\ub97c \ubc14\ub77c\ubcf8\ub2e4."
+    ask: ""
+    choices: []
+    next: ""
+    end: 1
+    dest: ""

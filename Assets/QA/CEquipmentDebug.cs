@@ -9,6 +9,7 @@ public class CEquipmentDebug : MonoBehaviour
     [SerializeField] private Transform _buttonRoot;
     [SerializeField] private Button _buttonPrefab;
     [SerializeField] private CItemEquipmentSO[] _equipments;
+    [SerializeField] private CItemConsumableSO[] _potions;
 
     private void Awake()
     {
@@ -47,6 +48,21 @@ public class CEquipmentDebug : MonoBehaviour
             button.GetComponentInChildren<TMP_Text>().text = equipment.Name;
             button.onClick.AddListener(() => GiveEquipment(equipment));
         }
+
+        for (int i = 0; i < _potions.Length; i++)
+        {
+            CItemConsumableSO potion = _potions[i];
+
+            if (potion == null)
+            {
+                continue;
+            }
+
+            Button button = Instantiate(_buttonPrefab, _buttonRoot);
+            button.gameObject.SetActive(true);
+            button.GetComponentInChildren<TMP_Text>().text = potion.Name;
+            button.onClick.AddListener(() => GiveItem(potion));
+        }
     }
 
     private void GiveEquipment(CItemEquipmentSO equipment)
@@ -69,5 +85,24 @@ public class CEquipmentDebug : MonoBehaviour
         }
     }
 
+    private void GiveItem(CItemSO item)
+    {
+        if (_player == null)
+        {
+            _player = FindObjectOfType<CPlayer>();
+        }
+
+        if (_player == null || _player.Inventory == null || item == null)
+        {
+            return;
+        }
+
+        int added = _player.Inventory.AddItem(item.Id);
+
+        if (added > 0)
+        {
+            CLogger.Log($"[QA] {item.Name} 인벤토리에 추가");
+        }
+    }
 
 }

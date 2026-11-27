@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: CrimsonClawLowerBody
-  m_Shader: {fileID: 4800000, guid: d48d2e4716b325743a6e07fc3c444356, type: 3}
+  m_Shader: {fileID: 4800000, guid: 8fbef9ee5b9beda42802e1d4aff68a37, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -23,54 +23,147 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _FaceSdfTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _GlossTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: a64a1349f3e490446b056b940abab874, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MeanTex:
+        m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Ramp:
         m_Texture: {fileID: 2800000, guid: 3dc0e3384dcc96445a37368346dc2744, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _RampCloth:
+        m_Texture: {fileID: 2800000, guid: c29e5caaee371b64b92c755e27719f28, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RampHair:
+        m_Texture: {fileID: 2800000, guid: 90a533bf02cb3df45960fa6effef2f82, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RampSkin:
+        m_Texture: {fileID: 2800000, guid: dfc8577d3f5e3ea428d05297f6e8c393, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShadeTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AO: 0
+    - _AO: 0.4
+    - _AlbedoFlat: 0
     - _AlbedoGamma: 1
     - _AlbedoSat: 1
     - _AmbientStrength: 0.06
     - _CastShadow: 0
-    - _ClothHueKeep: 0.5
+    - _ClothHueKeep: 0.57
+    - _EyeHlSize: 0.05
+    - _EyeUvU: 0.68
+    - _FaceBend: 1.5
     - _FaceBias: 0.1
-    - _FaceCastShadow: 0.15
+    - _FaceBow: 0.35
+    - _FaceCastShadow: 0.2
+    - _FaceCenterLit: 0
     - _FaceCurve: 0.5
-    - _FaceNormalSmooth: 0.82
+    - _FaceEdge: 0.2
+    - _FaceFlat: 1
+    - _FaceNormalSmooth: 1
     - _FaceSDF: 0
-    - _FaceSoft: 0.06
-    - _HairLuma: 0.0199
-    - _HairSpec: 0.62
+    - _FaceSdf2Back: 1
+    - _FaceSdf2Shift: 0
+    - _FaceSdf2Soft: 0
+    - _FaceSdfMapOn: 0
+    - _FaceShade: 0.58
+    - _FaceSoft: 0.126
+    - _FaceSoftNrm: 0
+    - _FaceWrap: 0
+    - _GoldAny: 0
+    - _HairHueKeep: 0.85
+    - _HairLuma: 0.06757
+    - _HairRing: 0.55
+    - _HairRingBack: 0
+    - _HairRingCurve: 0.3
+    - _HairRingPos: 0.3
+    - _HairRingSoft: 0.3
+    - _HairRingStrand: 0.45
+    - _HairRingWidth: 0.07
+    - _HairSpec: 0.39
+    - _HairSpecBody: 0
+    - _HairSpecMatte: 1
     - _HairSpecPow: 110
-    - _HairSpecThresh: 0.76
-    - _Metal: 0
+    - _HairSpecThresh: 0.72
+    - _Halftone: 0
+    - _HalftoneScale: 5
+    - _HasFace: 1
+    - _HasGloss: 0
+    - _HasMean: 0
+    - _HasShade: 0
+    - _Metal: 0.43
     - _MetalBand: 0.55
-    - _MetalSpec: 1
+    - _MetalSatMin: 0.28
+    - _MetalSpec: 0.9
     - _MetalSteel: 0
-    - _NeckShadow: 1
+    - _NeckFull: 0
+    - _NeckShadeAmt: 0.5
+    - _NeckShadow: 0
+    - _NeckTint: 1
+    - _NoGold: 0
+    - _NoSkin: 0
     - _OutlineDark: 0.32
     - _OutlineTex: 1
     - _OutlineWidth: 1
     - _OutlineZ: 0.0004
     - _Part: 3
     - _Rim: 0
-    - _RimSoft: 0.04
-    - _RimWidth: 0.62
+    - _RimFace: 0.15
+    - _RimHair: 0.3
+    - _RimSoft: 0.01
+    - _RimWidth: 0.7
+    - _ShadeAmt: 0
+    - _ShadeHue: 0.5
+    - _SkinPick: 1
+    - _SkinPickWide: 1
     - _SoftNormal: 0.35
+    - _SoftNormalSkin: 0.9
+    - _Steel: 0
+    - _TexShade: 0
     - _UseSceneLightColor: 0
     m_Colors:
     - _Ambient: {r: 0.5411765, g: 0.5647059, b: 0.72156864, a: 1}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _HairSpecColor: {r: 0.54901963, g: 0.4862745, b: 0.4627451, a: 1}
+    - _EyeFx: {r: 1, g: 0, b: 0.34, a: 0}
+    - _EyePos: {r: 0.36, g: -0.89, b: 0.63, a: 0.096}
+    - _FaceSdf2: {r: 1, g: 0.74, b: -0.75, a: 0.9}
+    - _FaceSdf2Curve: {r: 0, g: -0.2, b: 0.3, a: 0}
+    - _FaceSdfRect: {r: 1.25, g: -2.2, b: 1.3, a: 0}
+    - _FaceTexFlat: {r: 0, g: 0.12, b: 0.55, a: 0}
+    - _FaceTexFlatCol: {r: 0.9451, g: 0.77255, b: 0.7451, a: 0}
+    - _FaceTexFlatRef: {r: 0.9451, g: 0.77255, b: 0.7451, a: 0}
+    - _Finish: {r: 1.07, g: 1.08, b: 0.66, a: 0}
+    - _GlossCut: {r: 0, g: 0.08, b: 0, a: 0}
+    - _HairForm: {r: 0.7, g: 0.4, b: 0.6, a: 0.85}
+    - _HairSpecColor: {r: 1, g: 0.7882353, b: 0.8235294, a: 1}
+    - _HairStrand: {r: 0.85, g: 1.35, b: 0, a: 0}
+    - _LightColor: {r: 1, g: 1, b: 1, a: 1}
     - _LightTint: {r: 1, g: 0.972549, b: 0.9411765, a: 1}
-    - _MetalSteelTint: {r: 0.902, g: 0.929, b: 1, a: 1}
-    - _MetalTint: {r: 1, g: 0.9019608, b: 0.6901961, a: 1}
+    - _MetalSteelTint: {r: 0.9019608, g: 0.92941177, b: 1, a: 1}
+    - _MetalTint: {r: 1, g: 0.8862745, b: 0.6901961, a: 1}
     - _OutlineColor: {r: 0.078431375, g: 0.047058824, b: 0.09411765, a: 1}
-    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
+    - _RimColor: {r: 1, g: 0.9411765, b: 0.9098039, a: 1}
+    - _SkinPickSet: {r: -1, g: 0.5, b: 0.18, a: 1}
+    - _SkinRef: {r: 0.95686, g: 0.76863, b: 0.73333, a: 0}
+    - _SkinTone: {r: 0.1, g: 0.1, b: 0, a: -1.05}
+    - _SkinToneCol: {r: 0.7058824, g: 0.5137255, b: 0.5254902, a: 1}
   m_BuildTextureStacks: []

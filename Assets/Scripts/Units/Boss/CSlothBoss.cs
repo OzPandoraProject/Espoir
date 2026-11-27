@@ -80,6 +80,8 @@ public class CSlothBoss : CEnemy, IBoss
     private int _firstMain = Animator.StringToHash("mAttack01");
     private int _secondMain = Animator.StringToHash("mAttack02");
     private int _thirdMain = Animator.StringToHash("mAttack03");
+    private int _finalMain = Animator.StringToHash("mAttack04");
+
     private int _grogiState = Animator.StringToHash("tGrogi");
 
     #endregion
@@ -97,8 +99,6 @@ public class CSlothBoss : CEnemy, IBoss
     private Vector3 _patternPos;
     private Vector3 _savePos;
 
-    private float _thunderAngle;
-    private float _grogiDamage;
     private float _atkTimer;
     private float _delayTimer;
     private float _grogiTimer;
@@ -109,8 +109,6 @@ public class CSlothBoss : CEnemy, IBoss
     private int mainAtk;
     private bool _onAttack;
 
-
-    private bool _isStop;
     private bool _isNormal;
     private bool _isSub;
     private bool _isMain;
@@ -195,7 +193,12 @@ public class CSlothBoss : CEnemy, IBoss
 
     private void FixedUpdate()
     {
-        if (_isDead || HpCurrent <= 0f) return;
+        if (_isDead || HpCurrent <= 0f)
+        {
+
+            _currentState = ESlothBossState.Dead;
+            return;
+        }
         if (_onGrogi == true)
         {
 
@@ -216,7 +219,7 @@ public class CSlothBoss : CEnemy, IBoss
         }
         else
         {
-            _atkTime = _isMain ? 7.3f : 5;
+            _atkTime = _isMain ? 7.3f : 5f;
             _atkTimer += Time.fixedDeltaTime;
         }
     }
@@ -255,9 +258,12 @@ public class CSlothBoss : CEnemy, IBoss
 
             else
             {
-                
-                _returnDelayTime = _isMain ? 7 : 3;
+                if (_isMain == true)
+                _returnDelayTime = 7f;
 
+                else
+                _returnDelayTime = (_mainCount == 4) ? 1.5f : 2.5f;
+                                
             }
 
         }
@@ -293,7 +299,7 @@ public class CSlothBoss : CEnemy, IBoss
 
         else if (currentHP < this.HpMax * 0.2f && _mainCount == 3)
         {
-            CallingMainPattern(0);
+            CallingMainPattern(3);
             return true;
         }
 
@@ -379,11 +385,19 @@ public class CSlothBoss : CEnemy, IBoss
             return;
         }
 
+        int prevAtk = normalAtk;
         _isSub = false;
         _isMain = false;
 
         normalAtk = Random.Range(0, 4);
         _onAttack = true;
+
+        if(normalAtk == prevAtk)
+        {
+            normalAtk = (prevAtk + 1) % 4;
+
+        }
+
 
         CLogger.Log($"Normal Attack Pattern : {normalAtk}");
 
@@ -422,10 +436,23 @@ public class CSlothBoss : CEnemy, IBoss
             return;
         }
 
+        int prevSub = subAtk;
+
         _isMain = false;
         _isNormal = false;
 
-        subAtk = (normalCount > Random.Range(3, 6)) ? Random.Range(1, 3) : Random.Range(1, 4);
+        subAtk = (normalCount >= 3) ? 1 : Random.Range(1, 4);
+        
+        if(prevSub == subAtk)
+        {
+            subAtk++;
+            if(subAtk > 3)
+            {
+                subAtk = (prevSub % 3) + 1;
+            }
+
+        }
+
 
         _onAttack = true;
 
@@ -456,7 +483,7 @@ public class CSlothBoss : CEnemy, IBoss
         {
             return;
         }
-
+        _mainCount++;
         _isNormal = false;
         _isSub = false;
 
@@ -481,6 +508,12 @@ public class CSlothBoss : CEnemy, IBoss
                 LightningAttack().Forget();
 
                 break;
+
+            case 3:
+                _animator.SetTrigger(_finalMain);
+                LikeOneShotAttack().Forget();
+                break;
+
 
         }
 
@@ -521,6 +554,7 @@ public class CSlothBoss : CEnemy, IBoss
                 break;
 
             case ESlothBossState.Dead:
+                _animator.SetTrigger("tDie");
                 break;
 
             case ESlothBossState.Grogi:
@@ -583,7 +617,7 @@ public class CSlothBoss : CEnemy, IBoss
 
     private void BackSpinAttack()
     {
-        int hit = NormalFindPlayer(6f);
+        int hit = NormalFindPlayer(7f);
 
         Vector3 spinAreaDir = -this.transform.right;
 
@@ -1027,7 +1061,6 @@ public class CSlothBoss : CEnemy, IBoss
 
         _atkTimer = 0;
 
-        _mainCount++;
         _onAttack = false;
 
     }
@@ -1066,6 +1099,17 @@ public class CSlothBoss : CEnemy, IBoss
         LikeOneShotDamage(damage);
     }
 
+    private void LikeOneShotAttack_SmallDamage()
+    {
+        float damage = 0.4f;
+        LikeOneShotDamage(damage);
+    }
+
+    private void LikeOneShotAttack_BigDamage()
+    {
+        float damage = 0.95f;
+        LikeOneShotDamage(damage);
+    }
 
 
     private void FreezeAnime()
@@ -1146,7 +1190,6 @@ public class CSlothBoss : CEnemy, IBoss
         if (battleVersion != _battleVersion) return;
 
         _atkTimer = 0;
-        _mainCount++;
         _onAttack = false;
 
     }
@@ -1243,7 +1286,6 @@ public class CSlothBoss : CEnemy, IBoss
         await UniTask.Delay(5000);
         if (battleVersion != _battleVersion) return;
 
-        _mainCount++;
         _onAttack = false;
 
     }
@@ -1430,14 +1472,6 @@ public class CSlothBoss : CEnemy, IBoss
         }
 
     }
-    
-
-
-
-
-    #endregion
-
-
 
     private void GrogiState()
     {
@@ -1456,8 +1490,8 @@ public class CSlothBoss : CEnemy, IBoss
             _animator.ResetTrigger(_firstMain);
             _animator.ResetTrigger(_secondMain);
             _animator.ResetTrigger(_thirdMain);
-            _animator.ResetTrigger (_grogiState);
-            
+            _animator.ResetTrigger(_grogiState);
+
             CLogger.Warn("GrogiState 함수야!!");
 
             _atkTimer = 0f;
@@ -1481,9 +1515,13 @@ public class CSlothBoss : CEnemy, IBoss
 
     }
 
+
+    #endregion
+
+
     private int NormalFindPlayer(float radius)
     {
-        Vector3 offset = this.transform.forward * 3f;
+        Vector3 offset = (normalAtk == 1)? this.transform.forward : this.transform.forward * 3f;
                      
         int hit = Physics.OverlapSphereNonAlloc(this.transform.position + offset, radius, _hitCollider, _targetMask);
 

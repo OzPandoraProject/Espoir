@@ -2111,8 +2111,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4b0a0ed44a7f9f44b0c51fbd432b65c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _baseHpMax: 100
-  _baseAttack: 20
+  _baseHpMax: 1000
+  _baseAttack: 100
   _baseDefence: 0
   _debugLog: 0
   _statusEffectAnchor: {fileID: 0}
@@ -3623,6 +3623,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: potion
     introNode: potion
+    equipObjectiveId: equip
+    equippedIntroNode: necklace_equipped
     remind: "1\uBC88 \uD0A4\uB85C \uD3EC\uC158 \uD55C \uBCD1 \uB9C8\uC154 \uBD10."
     keys:
     - key: 1
@@ -4342,6 +4344,14 @@ PrefabInstance:
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: db4f9ba0fd341754c8ecd33ab9755eb9, type: 3}
+    - target: {fileID: 3981137211721397068, guid: c09567da9c497ff4aad4e4a905fa9b24, type: 3}
+      propertyPath: _backgroundSounds.Array.data[3].volume
+      value: 0.67
+      objectReference: {fileID: 0}
+    - target: {fileID: 3981137211721397068, guid: c09567da9c497ff4aad4e4a905fa9b24, type: 3}
+      propertyPath: _backgroundSounds.Array.data[4].volume
+      value: 0.67
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -437,7 +437,7 @@ public class CBossHpView : MonoBehaviour
         PlaceBox(_tag.rectTransform, columnX + l.barWidth + l.tagGap, l.tagTop, tagW, l.tagHeight);
         PlaceText(_tagText, columnX + l.barWidth + l.tagGap + l.tagPaddingX, l.tagBaseline);
 
-        float nameW = CHudNumberFormat.CssWidth(_name, _bossName) - _name.characterSpacing * 0.01f * _name.fontSize;
+        float nameW = CHudNumberFormat.CssWidth(_name, _name.text) - _name.characterSpacing * 0.01f * _name.fontSize;
         PlaceText(_name, columnX, l.rowBaseline);
         PlaceText(_title, columnX + nameW + l.nameGap, l.rowBaseline);
 
@@ -637,42 +637,29 @@ public class CBossHpView : MonoBehaviour
     private void SetBestTimer()
     {
         if (_bestTimer == null) return;
-        if (CGameManager.Instance == null)
+        if (_boss == null || _boss.BossId == EBossClear.None || CGameManager.Instance == null ||
+            !CGameManager.Instance.TryGetBossClearTime(_boss.BossId, out float bestTime))
         {
             _bestTimer.gameObject.SetActive(false);
             return;
         }
-        if (_boss is CSlothBoss)
-        {
-            CGameManager.Instance.TryGetBossClearTime(EBossClear.Pigritia, out float bestTime);
-            if (bestTime <= 0)
-            {
-                _bestTimer.text = "최고기록 없음";
-                _bestTimer.gameObject.SetActive(true);
-            }
-            else
-            {
-                _bestTimer.text = "최고 " + FormatTimer(bestTime);
-                _bestTimer.gameObject.SetActive(true);
-            }
-            return;
-        }
+
+        _bestTimer.text = bestTime > 0f ? "최고 " + FormatTimer(bestTime) : "최고기록 없음";
+        _bestTimer.gameObject.SetActive(true);
     }
 
     private void UpdateTimerText()
     {
-        if (_currentTimer == null || _bestTimer == null) return;
-        if (CGameManager.Instance == null) return;
-        if (_boss is CSlothBoss)
+        if (_currentTimer == null) return;
+        if (_boss == null || CGameManager.Instance == null ||
+            !CGameManager.Instance.TryGetBossTimer(_boss.BossId, out float currentTimer, out _))
         {
-            if (CGameManager.Instance.TryGetBossTimer(EBossClear.Pigritia, out float currentTimer, out bool timeOvered))
-            {
-                _currentTimer.text = FormatTimer(currentTimer);
-                _currentTimer.gameObject.SetActive(true);
-            }
-            else _currentTimer.gameObject.SetActive(false);
+            _currentTimer.gameObject.SetActive(false);
+            return;
         }
-        else return;
+
+        _currentTimer.text = FormatTimer(currentTimer);
+        _currentTimer.gameObject.SetActive(true);
     }
 
     private static string FormatTimer(float time)
@@ -729,7 +716,7 @@ public class CBossHpView : MonoBehaviour
 
     private bool UpdateGroggyResult()
     {
-        bool succeeded = _boss is CSlothBoss sloth && sloth.IsGroggy;
+        bool succeeded = _boss is IBoss boss && boss.IsGroggy;
 
         if (_wasGroggyCheckActive)
         {

@@ -98,9 +98,16 @@ MonoBehaviour:
     next: 
     end: 1
     dest: 
+  - id: necklace_equipped
+    lines:
+    - "잘 어울리네."
+    ask:
+    choices: []
+    next: potion
+    end: 1
+    dest:
   - id: potion
     lines:
-    - "\uC798 \uC5B4\uC6B8\uB9AC\uB124."
     - "\uAC00\uBC29\uC5D0 \uD3EC\uC158\uB3C4 \uB123\uC5B4 \uB480\uC5B4. \uB9C8\uC2DC\uBA74
       \uBC14\uB85C \uCCB4\uB825\uC774 \uCC28\uC624\uB974\uACE0, \uD55C \uBC88 \uB9C8\uC2DC\uBA74
       \uC7A0\uAE50 \uAE30\uB2E4\uB824\uC57C \uB2E4\uC74C \uAC78 \uB9C8\uC2E4 \uC218
