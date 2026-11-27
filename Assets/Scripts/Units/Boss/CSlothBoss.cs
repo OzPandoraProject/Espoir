@@ -30,6 +30,11 @@ public class CSlothBoss : CEnemy, IBoss
     [SerializeField] private LayerMask _obtacleMask;
     [SerializeField] private Collider[] _hitCollider = new Collider[2];
 
+    [Header("Sound")]
+    [SerializeField] private AudioSource _appear;
+    [SerializeField] private AudioSource _disappear;
+
+
 
     [Header("Boss State")]
     [SerializeField] private ESlothBossState _bossState;
@@ -177,6 +182,13 @@ public class CSlothBoss : CEnemy, IBoss
     protected override void Start()
     {
         base.Start();
+        if (_soundManager != null)
+        {
+            _soundManager.PlaySE(EEffectSound.Appear);
+            if (_appear != null) _appear.Play();
+
+        }
+
         _startState = ESlothBossState.Idle;
         _currentState = _bossState;
 
@@ -195,19 +207,20 @@ public class CSlothBoss : CEnemy, IBoss
     {
         if (_isDead || HpCurrent <= 0f)
         {
-
+         
             _currentState = ESlothBossState.Dead;
             return;
         }
+
         if (_onGrogi == true)
         {
 
             _currentState = ESlothBossState.Grogi;
             BossState();
 
-
             return;
         }
+
         if (_groggyDuration > 0f) return;
 
         LookAtPlayer();

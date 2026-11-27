@@ -27,6 +27,8 @@ public enum EEffectSound
     QuestionChoose,
     Success,
     Beep,
+    Appear,
+    Disappear
 }
 
 [Serializable]
