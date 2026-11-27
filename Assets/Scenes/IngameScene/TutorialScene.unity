@@ -2116,7 +2116,7 @@ MonoBehaviour:
   _baseDefence: 0
   _debugLog: 0
   _statusEffectAnchor: {fileID: 0}
-  _statusEffectOffset: {x: 0, y: 0, z: 0}
+  _statusEffectOffset: {x: 0, y: -1, z: 0}
   _statusEffectRadius: 1
   _debugSet: 0
   _inventory: {fileID: 1720000003}
@@ -3565,6 +3565,8 @@ MonoBehaviour:
   _steps:
   - objectiveId: camera
     introNode: 
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "Shift\uB97C \uB204\uB978 \uCC44 \uC67C\uCABD \uBC84\uD2BC\uC73C\uB85C
       \uB04C\uC5B4 \uBCF4\uACE0, \uD720\uB3C4 \uAD74\uB824 \uBD10."
     keys:
@@ -3590,6 +3592,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: walk
     introNode: walk
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: 
     keys:
     - key: RMB
@@ -3606,6 +3610,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: equip
     introNode: equip
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "I \uD0A4\uB85C \uAC00\uBC29 \uC5F4\uACE0, \uCD08\uC2EC\uC790\uC758 \uBAA9\uAC78\uC774\uB97C
       \uC624\uB978\uCABD \uD074\uB9AD\uD574\uC11C \uC7A5\uCC29\uD574 \uBD10."
     keys:
@@ -3641,6 +3647,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: dash
     introNode: dash
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "\uD5C8\uC218\uC544\uBE44 \uCABD\uC73C\uB85C Space, \uB300\uC2DC!"
     keys:
     - key: Space
@@ -3657,6 +3665,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: link
     introNode: link
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "\uD3C9\uD0C0 \uC138 \uBC88, \uB9C9\uD0C0 \uB4E4\uC5B4\uAC00\uC790\uB9C8\uC790
       Q."
     keys:
@@ -3683,6 +3693,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: mark
     introNode: mark
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "\uB9C9\uD0C0\uB791 Q\uB85C \uB099\uC778\uC744 \uB2E4\uC12F \uAC1C\uAE4C\uC9C0
       \uC0C8\uACA8 \uBD10. \uC9C0\uAE08 {0}\uAC1C\uC57C."
     keys:
@@ -3709,6 +3721,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: rush
     introNode: rush
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "\uB099\uC778 \uB2E4\uC12F \uAC1C\uAC00 \uCC3C\uC744 \uB54C \uD5C8\uC218\uC544\uBE44
       \uCABD\uC73C\uB85C E."
     keys:
@@ -3736,6 +3750,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: crown1
     introNode: crown1
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "\uB9C9\uD0C0 \uB123\uACE0, \uC904\uC774 \uB0A8\uC544 \uC788\uC744 \uB54C
       W."
     keys:
@@ -3762,6 +3778,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: crown2
     introNode: crown2
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "\uB9C9\uD0C0 \uB123\uACE0 W\uB85C \uB450 \uACB9\uC9F8."
     keys:
     - key: LMB
@@ -3787,6 +3805,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: crown4
     introNode: crown4
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "\uD3C9\uD0C0 \uB124 \uBC88\uC9F8\uAE4C\uC9C0 \uB05D\uAE4C\uC9C0."
     keys:
     - key: LMB
@@ -3803,6 +3823,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: ult
     introNode: ult
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: 
     keys:
     - key: R
@@ -3838,6 +3860,8 @@ MonoBehaviour:
     grantsPower: 0
   - objectiveId: power
     introNode: power
+    equipObjectiveId: 
+    equippedIntroNode: 
     remind: "V\uB85C \uB0B4 \uAD8C\uB2A5\uC744 \uBC1B\uACE0, \uD55C \uB300 \uCCD0
       \uBD10."
     keys:
